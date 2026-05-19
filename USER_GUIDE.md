@@ -8,14 +8,16 @@ A web-based tool for creating branded QR codes for URLs, WiFi networks, email, S
 
 1. [Getting started](#1-getting-started)
 2. [Quick start: Brand profiles](#2-quick-start-brand-profiles)
-3. [Single QR code generation](#3-single-qr-code-generation)
-4. [Logo selection](#4-logo-selection)
-5. [Appearance: style, border, size, color](#5-appearance-style-border-size-color)
-6. [Output, downloads, and validation](#6-output-downloads-and-validation)
-7. [Batch generation](#7-batch-generation)
-8. [Keyboard and accessibility](#8-keyboard-and-accessibility)
-9. [Troubleshooting](#9-troubleshooting)
-10. [Files in this project](#10-files-in-this-project)
+3. [Saved profiles](#3-saved-profiles)
+4. [Single QR code generation](#4-single-qr-code-generation)
+5. [Logo selection](#5-logo-selection)
+6. [Appearance: style, border, transparency, size, color](#6-appearance-style-border-transparency-size-color)
+7. [Output, downloads, and validation](#7-output-downloads-and-validation)
+8. [Recent generations](#8-recent-generations)
+9. [Batch generation](#9-batch-generation)
+10. [Keyboard and accessibility](#10-keyboard-and-accessibility)
+11. [Troubleshooting](#11-troubleshooting)
+12. [Files in this project](#12-files-in-this-project)
 
 ---
 
@@ -32,9 +34,12 @@ Open `index.html` in any modern browser (Chrome, Safari, Firefox, or Edge). All 
 
 The page is laid out top-to-bottom:
 
-- **Top bar** — Red Hat EBC logo (always visible).
-- **Card** — content type, brand profile, content fields, logo, appearance, and the generate button.
-- **Output panel** — appears after generation with download/copy options.
+- **Top bar** — Red Hat EBC logo plus a "User guide →" link.
+- **Card** — generation mode, brand profile, content fields, logo, appearance, and the generate button.
+- **Output panel** — appears after generation with download/copy buttons.
+- **Recent generations** — collapsible list of your last few codes, restored with one click.
+
+Your last-used settings (type, style, size, border, transparent flag, color, and logo) are remembered between sessions in your browser's local storage.
 
 ---
 
@@ -53,7 +58,37 @@ The selected chip stays highlighted in its brand color. If you later change the 
 
 ---
 
-## 3. Single QR code generation
+## 3. Saved profiles
+
+In addition to the three built-in chips you can save any logo + color combination as a **custom profile** and apply it later with one click.
+
+### Save the current settings
+
+1. Configure the logo and color you want.
+2. Click the dashed **+ Save as…** chip.
+3. Enter a name (e.g. *AnsibleFest 2026*) in the modal and click **Save profile**.
+
+A new chip with your chosen color appears alongside the built-ins. Up to 20 custom profiles can be saved.
+
+### Apply, rename, reorder, delete
+
+- **Apply** — single-click the chip.
+- **Rename** — double-click the chip; type the new name; Enter to save, Escape to cancel.
+- **Reorder** — drag the chip left/right. A red insertion line shows where it'll land.
+- **Delete** — hover or focus the chip, then click the **×** in the corner (a confirmation is shown).
+
+### Export and import
+
+Use the **Export all** and **Import…** links beneath the chips row:
+
+- **Export all** downloads `qr-profiles-YYYY-MM-DD.json` containing all of your custom profiles (including any embedded custom logo data).
+- **Import…** loads a JSON file and merges its profiles into your existing list. Profiles with conflicting IDs get fresh IDs so duplicates can coexist.
+
+Profile data is stored in your browser only. Use Export / Import to share profiles between machines or with teammates.
+
+---
+
+## 4. Single QR code generation
 
 The **Single** tab (selected by default) creates one QR code at a time. Use the **QR code type** dropdown to pick what you're encoding.
 
@@ -66,11 +101,11 @@ The **Single** tab (selected by default) creates one QR code at a time. Use the 
 | Contact (vCard) | Adds a contact to the user's address book | Business cards, name badges |
 | Calendar event | Adds an event to the user's calendar | Event posters, save-the-date materials |
 
-### 3.1 URL / text
+### 4.1 URL / text
 
 Enter a URL or any text in the single field. When the URL contains keywords like `redhat.com`, `ebc.redhat.com`, or `openaccelerator`, a banner appears suggesting the matching brand logo — click **Apply** to add it, or **Dismiss** to keep your current selection.
 
-### 3.2 WiFi
+### 4.2 WiFi
 
 Fields:
 - **Network name (SSID)** — required.
@@ -78,7 +113,7 @@ Fields:
 - **Security** — WPA/WPA2/WPA3 covers virtually every modern network. WEP is legacy. *None* is for open networks.
 - **Hidden** — check if the SSID is not broadcast.
 
-### 3.3 Email
+### 4.3 Email
 
 - **Recipient email** — required.
 - **Subject** — optional; pre-fills the email subject line.
@@ -86,14 +121,14 @@ Fields:
 
 The QR code uses the standard `mailto:` URL with proper encoding.
 
-### 3.4 SMS
+### 4.4 SMS
 
 - **Phone number** — required. International format (`+1234567890`) gives the best scanner compatibility.
 - **Message** — optional; pre-fills the SMS body.
 
 If a message is provided, the `SMSTO:` format is used (broadest compatibility). Otherwise the standard `sms:` URL is used.
 
-### 3.5 Contact (vCard)
+### 4.5 Contact (vCard)
 
 Provide at least a name or organization. All other fields are optional:
 
@@ -103,7 +138,7 @@ Provide at least a name or organization. All other fields are optional:
 
 The output is a vCard 3.0 payload that imports cleanly into iOS Contacts, Android Contacts, Outlook, and most other address books.
 
-### 3.6 Calendar event
+### 4.6 Calendar event
 
 - **Event title** — required.
 - **Starts** — required, your local timezone.
@@ -114,7 +149,7 @@ Times are converted to UTC and packaged as a `VCALENDAR/VEVENT` payload, compati
 
 ---
 
-## 4. Logo selection
+## 5. Logo selection
 
 A logo embedded in the center of the QR code reinforces your brand. The generator automatically raises error correction to the highest level (~30% recovery) whenever a logo is present, so the code remains scannable.
 
@@ -130,9 +165,12 @@ Available from the **Logo** dropdown:
 
 ### Custom upload
 
-1. Select **Upload custom…** from the Logo dropdown.
-2. Click **Choose image…** and pick a PNG, JPG, SVG, or WebP file (up to 2 MB).
-3. The logo is embedded and the QR regenerates automatically.
+There are two ways to apply a custom logo:
+
+1. **File picker:** select **Upload custom…** from the Logo dropdown, then click **Choose image…** and pick a PNG, JPG, SVG, or WebP file (up to 2 MB).
+2. **Drag-and-drop:** drag an image file from your desktop and drop it anywhere on the card. A dashed red outline highlights the drop zone while the file is hovering.
+
+Either path embeds the image immediately and regenerates the QR.
 
 ### Auto-suggestion
 
@@ -140,7 +178,7 @@ When the URL/text field contains a recognized keyword (e.g. `redhat.com`, `ebc.r
 
 ---
 
-## 5. Appearance: style, border, size, color
+## 6. Appearance: style, border, transparency, size, color
 
 ### Style
 
@@ -150,6 +188,15 @@ When the URL/text field contains a recognized keyword (e.g. `redhat.com`, `ebc.r
 ### Border
 
 Toggle a thin rounded border around the QR code. Useful for print contexts where you want a defined edge.
+
+### Transparent background
+
+When **Transparent** is on, the QR code is generated with no background fill — only the dark modules are drawn. Use this when you want to overlay the code on a colored brand background, a photo, or printed artwork.
+
+- The PNG and SVG exports both preserve alpha transparency.
+- A subtle checkerboard appears behind the canvas in the browser as a visual reminder that the background is see-through.
+- The small white pad behind the embedded logo is preserved for scannability; if you want a fully transparent code, set Logo to **None**.
+- Scan validation still works — the validator composites onto white internally before decoding.
 
 ### Size
 
@@ -162,22 +209,33 @@ For print, choose Extra large or download as SVG (resolution-independent).
 
 ### Color
 
-Click the color swatch to pick any color for the dark modules. For best scannability:
+Click the color swatch to pick any color for the dark modules. Two rows of preset swatches sit underneath:
 
-- Use dark, high-contrast colors against a white background.
-- Avoid yellows, light blues, and muted tones — scanners may fail to detect the modules.
-- The Brand profile chips set scannable colors automatically (Red Hat red is the lightest tested-good color in the palette).
+- **Red Hat** — `#EE0000`, `#BE0000`, `#151515`, `#4D4D4D`.
+- **TOA** — the nine-color Open Accelerator palette (black, off-white, yellow, brown, light blue, dark teal, orange, maroon, white).
+
+The active swatch (matching the current color) is outlined in Red Hat red.
+
+### Color scannability warning
+
+A WCAG luminance check runs on every color change:
+
+- **No warning** — color is dark enough to scan reliably.
+- **Orange warning** — color is borderline; may not scan against bright backgrounds.
+- **Red warning** — color is too light against white; the code likely won't scan.
+
+The warnings are advisory. You can ignore them if the code will sit on a darker background, but the validator may also fail.
 
 ---
 
-## 6. Output, downloads, and validation
+## 7. Output, downloads, and validation
 
 After generation, the QR code appears below the card with three actions.
 
 ### Download options
 
-- **Download PNG** — raster image with the logo baked in. Best for digital use (web pages, email signatures, screen-share decks).
-- **Download SVG** — vector format with the logo embedded. Best for print at any size — scales without quality loss.
+- **Download PNG** — raster image with the logo baked in. Best for digital use (web pages, email signatures, screen-share decks). Honors transparency.
+- **Download SVG** — vector format with the logo embedded. Best for print at any size — scales without quality loss. Honors transparency.
 - **Copy image** — copies the PNG to your clipboard for pasting into Slack, decks, documents, etc.
 
 Filenames include the logo key, e.g. `qrcode-ebc.png` or `qrcode-toa.svg`.
@@ -196,7 +254,21 @@ If the page is opened via `file://`, the browser may block reading the canvas an
 
 ---
 
-## 7. Batch generation
+## 8. Recent generations
+
+Each successful generation is stored in a **Recent generations** panel that appears under the output card. The panel keeps the last 12 codes, each showing:
+
+- A color swatch matching the QR color used.
+- The label (URL, "WiFi: …", "Email: …", etc.).
+- A relative timestamp ("just now", "5m ago", etc.).
+
+Click any entry to restore that exact configuration — logo, color, style, size, border, transparent flag — and re-render the same QR. Hover an entry to reveal a **×** delete button. The **Clear all** link at the bottom empties the history.
+
+The history is stored locally in your browser (capped at 256 KB total).
+
+---
+
+## 9. Batch generation
 
 For dozens or hundreds of QR codes at once, click the **Batch** tab.
 
@@ -204,7 +276,7 @@ For dozens or hundreds of QR codes at once, click the **Batch** tab.
 
 1. Set **Source** to *Paste list*.
 2. Paste your URLs into the textarea — one per line.
-3. Filenames are auto-generated from each URL's host and last path segment (e.g. `redhat.com-customer-a`).
+3. Filenames are derived from each URL's host and last path segment (e.g. `redhat.com-customer-a`) by default; see *Filename template* below to customize.
 
 ### Source: CSV upload
 
@@ -227,17 +299,36 @@ customer-c,https://www.redhat.com/briefings/customer-c
 - **SVG** — one SVG per row.
 - **PNG + SVG** — both for every row.
 
+### Filename template
+
+The **Filename template** field controls how each output file is named. Default is `{name}`. Available tokens:
+
+| Token | Replaced with |
+|---|---|
+| `{name}` | The derived filename from paste-list URL, or the first CSV column |
+| `{date}` | Today's date in `YYYY-MM-DD` format |
+| `{host}` | Host part of the URL (with leading `www.` stripped), e.g. `redhat.com` |
+| `{slug}` | Last path segment of the URL, e.g. `customer-a` |
+| `{index}` | The 1-based row number, zero-padded to 3 digits (e.g. `001`) |
+
+Examples:
+- `{date}-{name}` → `2026-05-19-customer-a.png`
+- `qr-{index}-{slug}` → `qr-001-customer-a.png`
+- `{host}-{slug}` → `redhat.com-customer-a.png`
+
+Disallowed characters are replaced with `_`.
+
 ### Generating
 
 Click **Generate ZIP** (the primary button changes label in Batch mode). A progress bar shows how many codes have been processed. When complete, a ZIP file named `qrcodes-YYYY-MM-DD.zip` downloads automatically.
 
-The current **Logo** and **Appearance** settings apply to every code in the batch.
+The current **Logo** and **Appearance** settings (including transparent background) apply to every code in the batch.
 
 > **Limits:** 500 items maximum per batch. For larger jobs, split into multiple ZIPs.
 
 ---
 
-## 8. Keyboard and accessibility
+## 10. Keyboard and accessibility
 
 The interface is fully keyboard-navigable.
 
@@ -257,11 +348,11 @@ Accessibility features:
 
 ---
 
-## 9. Troubleshooting
+## 11. Troubleshooting
 
 ### My QR code won't scan from a phone
 
-- Increase contrast — switch to a darker module color.
+- Increase contrast — switch to a darker module color. The color scannability warning under the picker will help.
 - Try a larger size (Extra large) and avoid pixelation when reprinting.
 - Reduce or remove the logo.
 - Shorten the encoded text — long URLs produce denser, harder-to-scan codes. Consider a URL shortener for very long links.
@@ -273,6 +364,10 @@ The logo + content combination is too aggressive. Try, in order:
 2. Switch from **Liquid** to **Square** style.
 3. Increase the size to Extra large.
 4. Shorten the URL or text.
+
+### My transparent QR code looks weird
+
+The checkerboard pattern behind the canvas only appears in the browser — it's a visual indicator that the background is transparent. The downloaded PNG/SVG won't include it. Place the file on the colored background where you intend to use it to see the final result.
 
 ### Logos don't embed when I download SVG
 
@@ -288,18 +383,35 @@ Your browser may not implement the Clipboard `write()` API. Use **Download PNG**
 
 This is expected after any manual change to the logo dropdown, file upload, or color picker. Click the desired profile chip again to re-apply its preset.
 
+### My saved profiles disappeared
+
+Profiles are stored in `localStorage`, which is per-browser, per-origin, and can be cleared by:
+- Clearing browser site data for the origin.
+- Opening the site in a different browser or incognito window.
+- Switching to a different machine.
+
+Use **Export all** regularly to keep a JSON backup that you can re-import.
+
 ### Batch generation seems frozen
 
 A 500-item batch can take 30+ seconds, depending on QR size and your CPU. The progress bar updates roughly every four items — if the bar is moving, give it another moment. If it's truly stuck, refresh the page and try a smaller batch.
 
+### A recent-history entry restores the wrong logo
+
+If the entry used an uploaded custom logo, the image data is stored alongside the entry. Very large custom logos may have been dropped during storage compaction. Re-upload the logo, then re-save the profile if needed.
+
 ---
 
-## 10. Files in this project
+## 12. Files in this project
 
 | File | Purpose |
 |---|---|
 | `index.html` | The QR code generator app — open this in a browser |
 | `USER_GUIDE.md` | This guide |
+| `user-guide.html` | Branded HTML user guide |
+| `README.md` | Project overview |
+| `CHANGELOG.md` | Release history |
+| `LICENSE` | MIT license for the source code |
 | `Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png` | Red Hat EBC team logo |
 | `Logo-Red_Hat-A-RGB.Small-logo-transparent.png` | Red Hat standard logo |
 | `Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png` | Red Hat reverse (for dark backgrounds) |
@@ -311,6 +423,16 @@ A 500-item batch can take 30+ seconds, depending on QR size and your CPU. The pr
 To share the tool with colleagues, copy the entire folder (or zip it). All assets are local — no internet connection is required at runtime except for the Google Fonts and the three CDN libraries (qrcode-generator, jsQR, JSZip).
 
 For an internal deployment, drop the folder on any static web host (S3, GitHub Pages, an internal Apache/nginx, etc.) and share the URL.
+
+### Local storage keys
+
+The app stores a few things locally in your browser:
+
+| Key | Purpose | Cap |
+|---|---|---|
+| `qr-custom-profiles-v1` | Saved custom profiles (name, color, logo) | 20 profiles / 4 MB |
+| `qr-last-settings-v1` | Last-used type, style, size, color, logo, transparent flag | ~1 KB |
+| `qr-recent-v1` | Recent generations history | 12 items / 256 KB |
 
 ---
 

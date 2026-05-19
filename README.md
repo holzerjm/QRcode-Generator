@@ -6,14 +6,30 @@ The entire app is a single static HTML file with no build step.
 
 ## Features
 
+**Content**
 - **Six content types** — URL/text, WiFi, Email, SMS, Contact (vCard 3.0), Calendar event (iCal)
-- **Brand profiles** — one-click presets for *Red Hat EBC* (`#EE0000`) and *The Open Accelerator* (`#FFC600`)
-- **Logo embedding** — preset logos for Red Hat, EBC, and TOA, or upload your own (PNG / JPG / SVG / WebP up to 2 MB)
-- **Auto-suggestion** — paste a `redhat.com` or `openaccelerator` URL and the matching logo is suggested
-- **Two styles** — square modules or liquid (rounded modules with circular finder patterns)
-- **Scan validation** — generated codes are decoded via `jsQR` and verified before display
-- **Three export formats** — PNG (raster), SVG (vector), and clipboard copy
 - **Batch generation** — paste a URL list or upload a CSV, get back a ZIP of PNGs/SVGs (up to 500 per batch)
+- **Filename templates** — tokens `{name}` `{date}` `{host}` `{slug}` `{index}` for batch output
+
+**Branding**
+- **Brand profiles** — one-click presets for *Red Hat EBC* (`#EE0000`) and *The Open Accelerator* (`#FFC600`)
+- **Saved custom profiles** — name, save, rename, reorder, and delete your own logo + color combinations (persisted in `localStorage`)
+- **Profile export / import** — round-trip profiles as JSON for sharing across machines or teammates
+- **Logo embedding** — preset logos for Red Hat, EBC, and TOA (plus reverse variants), or upload your own (PNG / JPG / SVG / WebP up to 2 MB)
+- **Drag-and-drop logo** — drop an image file directly on the card to set it as the logo
+- **URL auto-suggestion** — paste a `redhat.com` or `openaccelerator` URL and the matching logo is offered
+- **Brand color swatches** — Red Hat (4) and TOA (9) brand-safe color presets alongside a freeform picker
+
+**Output**
+- **Three export formats** — PNG (raster), SVG (vector), and clipboard copy
+- **Transparent background** — toggle for codes intended to overlay on colored brand artwork
+- **Two styles** — square modules or liquid (rounded modules with circular finder patterns)
+- **Scan validation** — generated codes are decoded via `jsQR` and verified before display (works for transparent codes too)
+- **Color scannability warning** — WCAG-luminance check warns before you generate an unscannable code
+
+**Quality of life**
+- **Persisted last-used settings** — type, style, size, color, logo, transparent flag remembered across sessions
+- **Recent generations history** — restore the exact settings of any of the last 12 generations with one click
 - **Red Hat brand styling** — Red Hat Display + Red Hat Text fonts, Red Hat red accents
 - **Fully accessible** — keyboard navigation, ARIA roles, focus management, live regions, reduced-motion support
 
@@ -41,6 +57,8 @@ A user guide is included in two formats:
 
 Both are reachable from the **"User guide →"** link in the app's top bar.
 
+Release history is in [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Project structure
 
 | File | Purpose |
@@ -49,6 +67,7 @@ Both are reachable from the **"User guide →"** link in the app's top bar.
 | `user-guide.html` | Branded HTML user guide |
 | `USER_GUIDE.md` | Markdown user guide |
 | `README.md` | This file |
+| `CHANGELOG.md` | Release history |
 | `LICENSE` | MIT license for the source code |
 | `Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png` | Red Hat EBC team logo |
 | `Logo-Red_Hat-A-RGB.Small-logo-transparent.png` | Red Hat standard logo |

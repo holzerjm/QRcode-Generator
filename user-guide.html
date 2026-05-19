@@ -553,10 +553,12 @@ footer .rh-mark {
     <ol>
       <li><a href="#getting-started">Getting started</a></li>
       <li><a href="#brand-profiles">Brand profiles</a></li>
+      <li><a href="#saved-profiles">Saved profiles</a></li>
       <li><a href="#single-generation">Single generation</a></li>
       <li><a href="#logo">Logo selection</a></li>
       <li><a href="#appearance">Appearance</a></li>
       <li><a href="#output">Output &amp; validation</a></li>
+      <li><a href="#recent">Recent generations</a></li>
       <li><a href="#batch">Batch generation</a></li>
       <li><a href="#keyboard">Keyboard &amp; accessibility</a></li>
       <li><a href="#troubleshooting">Troubleshooting</a></li>
@@ -583,10 +585,12 @@ footer .rh-mark {
       </div>
       <p>The page is laid out top-to-bottom:</p>
       <ul>
-        <li><strong>Top bar</strong> &mdash; Red Hat EBC logo (always visible).</li>
-        <li><strong>Card</strong> &mdash; content type, brand profile, content fields, logo, appearance, and the generate button.</li>
-        <li><strong>Output panel</strong> &mdash; appears after generation with download and copy options.</li>
+        <li><strong>Top bar</strong> &mdash; Red Hat EBC logo and a <em>User guide &rarr;</em> link.</li>
+        <li><strong>Card</strong> &mdash; generation mode, brand profile, content fields, logo, appearance, and the generate button.</li>
+        <li><strong>Output panel</strong> &mdash; appears after generation with download and copy buttons.</li>
+        <li><strong>Recent generations</strong> &mdash; a collapsible list of your last few codes, restored with one click.</li>
       </ul>
+      <p>Your last-used settings (type, style, size, border, transparent flag, color, and logo) are remembered between sessions in your browser's local storage.</p>
     </section>
 
     <!-- ─── 2. Brand profiles ─── -->
@@ -608,9 +612,43 @@ footer .rh-mark {
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 3. Single generation ─── -->
+    <!-- ─── 3. Saved profiles ─── -->
+    <section class="guide-section" id="saved-profiles">
+      <h2><span class="section-number">03</span>Saved profiles</h2>
+      <p>In addition to the three built-in chips you can save any logo + color combination as a <strong>custom profile</strong> and apply it later with one click.</p>
+
+      <h3>Save the current settings</h3>
+      <ol>
+        <li>Configure the logo and color you want.</li>
+        <li>Click the dashed <strong>+ Save as&hellip;</strong> chip.</li>
+        <li>Enter a name (e.g. <em>AnsibleFest 2026</em>) in the modal and click <strong>Save profile</strong>.</li>
+      </ol>
+      <p>A new chip with your chosen color appears alongside the built-ins. Up to 20 custom profiles can be saved.</p>
+
+      <h3>Apply, rename, reorder, delete</h3>
+      <ul>
+        <li><strong>Apply</strong> &mdash; single-click the chip.</li>
+        <li><strong>Rename</strong> &mdash; double-click the chip; type the new name; Enter to save, Escape to cancel.</li>
+        <li><strong>Reorder</strong> &mdash; drag the chip left/right. A red insertion line shows where it'll land.</li>
+        <li><strong>Delete</strong> &mdash; hover or focus the chip, then click the <strong>&times;</strong> in the corner (a confirmation is shown).</li>
+      </ul>
+
+      <h3>Export and import</h3>
+      <p>Use the <strong>Export all</strong> and <strong>Import&hellip;</strong> links beneath the chips row:</p>
+      <ul>
+        <li><strong>Export all</strong> downloads <code>qr-profiles-YYYY-MM-DD.json</code> containing all of your custom profiles (including any embedded custom logo data).</li>
+        <li><strong>Import&hellip;</strong> loads a JSON file and merges its profiles into your existing list. Profiles with conflicting IDs get fresh IDs so duplicates can coexist.</li>
+      </ul>
+      <div class="callout note">
+        <span class="label">Note</span>
+        Profile data is stored in your browser only. Use Export / Import to share profiles between machines or with teammates.
+      </div>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 4. Single generation ─── -->
     <section class="guide-section" id="single-generation">
-      <h2><span class="section-number">03</span>Single QR code generation</h2>
+      <h2><span class="section-number">04</span>Single QR code generation</h2>
       <p>The <strong>Single</strong> tab (selected by default) creates one QR code at a time. Use the <strong>QR code type</strong> dropdown to pick what you're encoding.</p>
       <div class="table-wrap">
         <table>
@@ -632,10 +670,10 @@ footer .rh-mark {
         </table>
       </div>
 
-      <h3>3.1 URL / text</h3>
+      <h3>4.1 URL / text</h3>
       <p>Enter a URL or any text in the single field. When the URL contains keywords like <code>redhat.com</code>, <code>ebc.redhat.com</code>, or <code>openaccelerator</code>, a banner appears suggesting the matching brand logo &mdash; click <strong>Apply</strong> to add it, or <strong>Dismiss</strong> to keep your current selection.</p>
 
-      <h3>3.2 WiFi</h3>
+      <h3>4.2 WiFi</h3>
       <p>Fields:</p>
       <ul>
         <li><strong>Network name (SSID)</strong> &mdash; required.</li>
@@ -644,7 +682,7 @@ footer .rh-mark {
         <li><strong>Hidden</strong> &mdash; check if the SSID is not broadcast.</li>
       </ul>
 
-      <h3>3.3 Email</h3>
+      <h3>4.3 Email</h3>
       <ul>
         <li><strong>Recipient email</strong> &mdash; required.</li>
         <li><strong>Subject</strong> &mdash; optional; pre-fills the email subject line.</li>
@@ -652,14 +690,14 @@ footer .rh-mark {
       </ul>
       <p>The QR code uses the standard <code>mailto:</code> URL with proper encoding.</p>
 
-      <h3>3.4 SMS</h3>
+      <h3>4.4 SMS</h3>
       <ul>
         <li><strong>Phone number</strong> &mdash; required. International format (<code>+1234567890</code>) gives the best scanner compatibility.</li>
         <li><strong>Message</strong> &mdash; optional; pre-fills the SMS body.</li>
       </ul>
       <p>If a message is provided, the <code>SMSTO:</code> format is used (broadest compatibility). Otherwise the standard <code>sms:</code> URL is used.</p>
 
-      <h3>3.5 Contact (vCard)</h3>
+      <h3>4.5 Contact (vCard)</h3>
       <p>Provide at least a name or organization. All other fields are optional:</p>
       <ul>
         <li><strong>Name</strong> &mdash; first and last.</li>
@@ -668,7 +706,7 @@ footer .rh-mark {
       </ul>
       <p>The output is a vCard 3.0 payload that imports cleanly into iOS Contacts, Android Contacts, Outlook, and most other address books.</p>
 
-      <h3>3.6 Calendar event</h3>
+      <h3>4.6 Calendar event</h3>
       <ul>
         <li><strong>Event title</strong> &mdash; required.</li>
         <li><strong>Starts</strong> &mdash; required, your local timezone.</li>
@@ -679,9 +717,9 @@ footer .rh-mark {
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 4. Logo ─── -->
+    <!-- ─── 5. Logo ─── -->
     <section class="guide-section" id="logo">
-      <h2><span class="section-number">04</span>Logo selection</h2>
+      <h2><span class="section-number">05</span>Logo selection</h2>
       <p>A logo embedded in the center of the QR code reinforces your brand. The generator automatically raises error correction to the highest level (~30% recovery) whenever a logo is present, so the code remains scannable.</p>
 
       <h3>Preset logos</h3>
@@ -695,20 +733,21 @@ footer .rh-mark {
       </ul>
 
       <h3>Custom upload</h3>
+      <p>There are two ways to apply a custom logo:</p>
       <ol>
-        <li>Select <strong>Upload custom&hellip;</strong> from the Logo dropdown.</li>
-        <li>Click <strong>Choose image&hellip;</strong> and pick a PNG, JPG, SVG, or WebP file (up to 2&nbsp;MB).</li>
-        <li>The logo is embedded and the QR regenerates automatically.</li>
+        <li><strong>File picker:</strong> select <strong>Upload custom&hellip;</strong> from the Logo dropdown, then click <strong>Choose image&hellip;</strong> and pick a PNG, JPG, SVG, or WebP file (up to 2&nbsp;MB).</li>
+        <li><strong>Drag-and-drop:</strong> drag an image file from your desktop and drop it anywhere on the card. A dashed red outline highlights the drop zone while the file is hovering.</li>
       </ol>
+      <p>Either path embeds the image immediately and regenerates the QR.</p>
 
       <h3>Auto-suggestion</h3>
       <p>When the URL/text field contains a recognized keyword (e.g. <code>redhat.com</code>, <code>ebc.redhat.com</code>, <code>openaccelerator</code>), a red-bordered banner appears suggesting the matching logo. This is purely a convenience &mdash; clicking <strong>Dismiss</strong> keeps your current setting.</p>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 5. Appearance ─── -->
+    <!-- ─── 6. Appearance ─── -->
     <section class="guide-section" id="appearance">
-      <h2><span class="section-number">05</span>Appearance: style, border, size, color</h2>
+      <h2><span class="section-number">06</span>Appearance: style, border, transparency, size, color</h2>
 
       <h3>Style</h3>
       <ul>
@@ -718,6 +757,15 @@ footer .rh-mark {
 
       <h3>Border</h3>
       <p>Toggle a thin rounded border around the QR code. Useful for print contexts where you want a defined edge.</p>
+
+      <h3>Transparent background</h3>
+      <p>When <strong>Transparent</strong> is on, the QR code is generated with no background fill &mdash; only the dark modules are drawn. Use this when you want to overlay the code on a colored brand background, a photo, or printed artwork.</p>
+      <ul>
+        <li>The PNG and SVG exports both preserve alpha transparency.</li>
+        <li>A subtle checkerboard appears behind the canvas in the browser as a visual reminder that the background is see-through.</li>
+        <li>The small white pad behind the embedded logo is preserved for scannability; if you want a fully transparent code, set Logo to <strong>None</strong>.</li>
+        <li>Scan validation still works &mdash; the validator composites onto white internally before decoding.</li>
+      </ul>
 
       <h3>Size</h3>
       <ul>
@@ -729,24 +777,33 @@ footer .rh-mark {
       <p>For print, choose Extra large or download as SVG (resolution-independent).</p>
 
       <h3>Color</h3>
-      <p>Click the color swatch to pick any color for the dark modules. For best scannability:</p>
+      <p>Click the color swatch to pick any color for the dark modules. Two rows of preset swatches sit underneath:</p>
       <ul>
-        <li>Use dark, high-contrast colors against a white background.</li>
-        <li>Avoid yellows, light blues, and muted tones &mdash; scanners may fail to detect the modules.</li>
-        <li>The Brand profile chips set scannable colors automatically (Red Hat red is the lightest tested-good color in the palette).</li>
+        <li><strong>Red Hat</strong> &mdash; <code>#EE0000</code>, <code>#BE0000</code>, <code>#151515</code>, <code>#4D4D4D</code>.</li>
+        <li><strong>TOA</strong> &mdash; the nine-color Open Accelerator palette (black, off-white, yellow, brown, light blue, dark teal, orange, maroon, white).</li>
       </ul>
+      <p>The active swatch (matching the current color) is outlined in Red Hat red.</p>
+
+      <h3>Color scannability warning</h3>
+      <p>A WCAG luminance check runs on every color change:</p>
+      <ul>
+        <li><strong>No warning</strong> &mdash; color is dark enough to scan reliably.</li>
+        <li><strong>Orange warning</strong> &mdash; color is borderline; may not scan against bright backgrounds.</li>
+        <li><strong>Red warning</strong> &mdash; color is too light against white; the code likely won't scan.</li>
+      </ul>
+      <p>The warnings are advisory. You can ignore them if the code will sit on a darker background, but the validator may also fail.</p>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 6. Output ─── -->
+    <!-- ─── 7. Output ─── -->
     <section class="guide-section" id="output">
-      <h2><span class="section-number">06</span>Output, downloads, and validation</h2>
+      <h2><span class="section-number">07</span>Output, downloads, and validation</h2>
       <p>After generation, the QR code appears below the card with three actions.</p>
 
       <h3>Download options</h3>
       <ul>
-        <li><strong>Download PNG</strong> &mdash; raster image with the logo baked in. Best for digital use (web pages, email signatures, screen-share decks).</li>
-        <li><strong>Download SVG</strong> &mdash; vector format with the logo embedded. Best for print at any size &mdash; scales without quality loss.</li>
+        <li><strong>Download PNG</strong> &mdash; raster image with the logo baked in. Best for digital use (web pages, email signatures, screen-share decks). Honors transparency.</li>
+        <li><strong>Download SVG</strong> &mdash; vector format with the logo embedded. Best for print at any size &mdash; scales without quality loss. Honors transparency.</li>
         <li><strong>Copy image</strong> &mdash; copies the PNG to your clipboard for pasting into Slack, decks, documents, etc.</li>
       </ul>
       <p>Filenames include the logo key, e.g. <code>qrcode-ebc.png</code> or <code>qrcode-toa.svg</code>.</p>
@@ -775,16 +832,33 @@ footer .rh-mark {
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 7. Batch ─── -->
+    <!-- ─── 8. Recent generations ─── -->
+    <section class="guide-section" id="recent">
+      <h2><span class="section-number">08</span>Recent generations</h2>
+      <p>Each successful generation is stored in a <strong>Recent generations</strong> panel that appears under the output card. The panel keeps the last 12 codes, each showing:</p>
+      <ul>
+        <li>A color swatch matching the QR color used.</li>
+        <li>The label (URL, "WiFi: &hellip;", "Email: &hellip;", etc.).</li>
+        <li>A relative timestamp ("just now", "5m ago", etc.).</li>
+      </ul>
+      <p>Click any entry to restore that exact configuration &mdash; logo, color, style, size, border, transparent flag &mdash; and re-render the same QR. Hover an entry to reveal a <strong>&times;</strong> delete button. The <strong>Clear all</strong> link at the bottom empties the history.</p>
+      <div class="callout note">
+        <span class="label">Note</span>
+        The history is stored locally in your browser (capped at 256&nbsp;KB total).
+      </div>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 9. Batch ─── -->
     <section class="guide-section" id="batch">
-      <h2><span class="section-number">07</span>Batch generation</h2>
+      <h2><span class="section-number">09</span>Batch generation</h2>
       <p>For dozens or hundreds of QR codes at once, click the <strong>Batch</strong> tab.</p>
 
       <h3>Source: pasted list</h3>
       <ol>
         <li>Set <strong>Source</strong> to <em>Paste list</em>.</li>
         <li>Paste your URLs into the textarea &mdash; one per line.</li>
-        <li>Filenames are auto-generated from each URL's host and last path segment (e.g. <code>redhat.com-customer-a</code>).</li>
+        <li>Filenames are derived from each URL's host and last path segment (e.g. <code>redhat.com-customer-a</code>) by default; see <em>Filename template</em> below to customize.</li>
       </ol>
 
       <h3>Source: CSV upload</h3>
@@ -806,9 +880,36 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
         <li><strong>PNG + SVG</strong> &mdash; both for every row.</li>
       </ul>
 
+      <h3>Filename template</h3>
+      <p>The <strong>Filename template</strong> field controls how each output file is named. Default is <code>{name}</code>. Available tokens:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Replaced with</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>{name}</code></td><td>The derived filename from paste-list URL, or the first CSV column</td></tr>
+            <tr><td><code>{date}</code></td><td>Today's date in <code>YYYY-MM-DD</code> format</td></tr>
+            <tr><td><code>{host}</code></td><td>Host part of the URL (with leading <code>www.</code> stripped), e.g. <code>redhat.com</code></td></tr>
+            <tr><td><code>{slug}</code></td><td>Last path segment of the URL, e.g. <code>customer-a</code></td></tr>
+            <tr><td><code>{index}</code></td><td>The 1-based row number, zero-padded to 3 digits (e.g. <code>001</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Examples:</p>
+      <ul>
+        <li><code>{date}-{name}</code> &rarr; <code>2026-05-19-customer-a.png</code></li>
+        <li><code>qr-{index}-{slug}</code> &rarr; <code>qr-001-customer-a.png</code></li>
+        <li><code>{host}-{slug}</code> &rarr; <code>redhat.com-customer-a.png</code></li>
+      </ul>
+      <p>Disallowed filesystem characters are replaced with <code>_</code>.</p>
+
       <h3>Generating</h3>
       <p>Click <strong>Generate ZIP</strong> (the primary button changes label in Batch mode). A progress bar shows how many codes have been processed. When complete, a ZIP file named <code>qrcodes-YYYY-MM-DD.zip</code> downloads automatically.</p>
-      <p>The current <strong>Logo</strong> and <strong>Appearance</strong> settings apply to every code in the batch.</p>
+      <p>The current <strong>Logo</strong> and <strong>Appearance</strong> settings (including transparent background) apply to every code in the batch.</p>
       <div class="callout warn">
         <span class="label">Heads up</span>
         500 items maximum per batch. For larger jobs, split into multiple ZIPs.
@@ -816,9 +917,9 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 8. Keyboard ─── -->
+    <!-- ─── 10. Keyboard ─── -->
     <section class="guide-section" id="keyboard">
-      <h2><span class="section-number">08</span>Keyboard and accessibility</h2>
+      <h2><span class="section-number">10</span>Keyboard and accessibility</h2>
       <p>The interface is fully keyboard-navigable.</p>
       <ul>
         <li><strong>Tab</strong> / <strong>Shift+Tab</strong> &mdash; move between fields.</li>
@@ -838,13 +939,13 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 9. Troubleshooting ─── -->
+    <!-- ─── 11. Troubleshooting ─── -->
     <section class="guide-section" id="troubleshooting">
-      <h2><span class="section-number">09</span>Troubleshooting</h2>
+      <h2><span class="section-number">11</span>Troubleshooting</h2>
 
       <h3>My QR code won't scan from a phone</h3>
       <ul>
-        <li>Increase contrast &mdash; switch to a darker module color.</li>
+        <li>Increase contrast &mdash; switch to a darker module color. The color scannability warning under the picker will help.</li>
         <li>Try a larger size (Extra large) and avoid pixelation when reprinting.</li>
         <li>Reduce or remove the logo.</li>
         <li>Shorten the encoded text &mdash; long URLs produce denser, harder-to-scan codes. Consider a URL shortener for very long links.</li>
@@ -859,6 +960,9 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
         <li>Shorten the URL or text.</li>
       </ol>
 
+      <h3>My transparent QR code looks weird</h3>
+      <p>The checkerboard pattern behind the canvas only appears in the browser &mdash; it's a visual indicator that the background is transparent. The downloaded PNG/SVG won't include it. Place the file on the colored background where you intend to use it to see the final result.</p>
+
       <h3>Logos don't embed when I download SVG</h3>
       <p>This happens when the page is opened via <code>file://</code> because browsers taint the canvas for security. The SVG still downloads, but the logo <code>&lt;image&gt;</code> references the original filename rather than embedding the bytes &mdash; so the logo only shows when the SVG sits alongside the original logo file.</p>
       <p>Fix: serve the project over <code>http://</code> (see <a href="#getting-started">Getting started</a>).</p>
@@ -869,14 +973,23 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
       <h3>The Brand profile chip stays deselected</h3>
       <p>This is expected after any manual change to the logo dropdown, file upload, or color picker. Click the desired profile chip again to re-apply its preset.</p>
 
+      <h3>My saved profiles disappeared</h3>
+      <p>Profiles are stored in <code>localStorage</code>, which is per-browser, per-origin, and can be cleared by:</p>
+      <ul>
+        <li>Clearing browser site data for the origin.</li>
+        <li>Opening the site in a different browser or incognito window.</li>
+        <li>Switching to a different machine.</li>
+      </ul>
+      <p>Use <strong>Export all</strong> regularly to keep a JSON backup that you can re-import.</p>
+
       <h3>Batch generation seems frozen</h3>
       <p>A 500-item batch can take 30+ seconds, depending on QR size and your CPU. The progress bar updates roughly every four items &mdash; if the bar is moving, give it another moment. If it's truly stuck, refresh the page and try a smaller batch.</p>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
 
-    <!-- ─── 10. Files ─── -->
+    <!-- ─── 12. Files ─── -->
     <section class="guide-section" id="files">
-      <h2><span class="section-number">10</span>Files in this project</h2>
+      <h2><span class="section-number">12</span>Files in this project</h2>
       <div class="table-wrap">
         <table>
           <thead>
@@ -889,6 +1002,9 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
             <tr><td><code>index.html</code></td><td>The QR code generator app &mdash; open this in a browser</td></tr>
             <tr><td><code>user-guide.html</code></td><td>This guide (branded)</td></tr>
             <tr><td><code>USER_GUIDE.md</code></td><td>Markdown source of the guide</td></tr>
+            <tr><td><code>README.md</code></td><td>Project overview</td></tr>
+            <tr><td><code>CHANGELOG.md</code></td><td>Release history</td></tr>
+            <tr><td><code>LICENSE</code></td><td>MIT license for the source code</td></tr>
             <tr><td><code>Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png</code></td><td>Red Hat EBC team logo</td></tr>
             <tr><td><code>Logo-Red_Hat-A-RGB.Small-logo-transparent.png</code></td><td>Red Hat standard logo</td></tr>
             <tr><td><code>Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png</code></td><td>Red Hat reverse (for dark backgrounds)</td></tr>
@@ -901,6 +1017,25 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
       <h3>Distribution</h3>
       <p>To share the tool with colleagues, copy the entire folder (or zip it). All assets are local &mdash; no internet connection is required at runtime except for the Google Fonts and the three CDN libraries (qrcode-generator, jsQR, JSZip).</p>
       <p>For an internal deployment, drop the folder on any static web host (S3, GitHub Pages, an internal Apache or nginx, etc.) and share the URL.</p>
+
+      <h3>Local storage keys</h3>
+      <p>The app stores a few things locally in your browser:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Purpose</th>
+              <th>Cap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>qr-custom-profiles-v1</code></td><td>Saved custom profiles (name, color, logo)</td><td>20 profiles / 4&nbsp;MB</td></tr>
+            <tr><td><code>qr-last-settings-v1</code></td><td>Last-used type, style, size, color, logo, transparent flag</td><td>~1&nbsp;KB</td></tr>
+            <tr><td><code>qr-recent-v1</code></td><td>Recent generations history</td><td>12 items / 256&nbsp;KB</td></tr>
+          </tbody>
+        </table>
+      </div>
       <a class="back-to-top" href="#main">&uarr; Back to top</a>
     </section>
   </main>
