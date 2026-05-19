@@ -331,6 +331,17 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   border-radius: 4px;
 }
 
+.qr-display canvas.transparent-bg {
+  background-color: var(--rh-white);
+  background-image:
+    linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+    linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+    linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
 .qr-url {
   margin-top: 14px;
   font-size: 13px;
@@ -1390,6 +1401,10 @@ footer .rh-mark {
           <input type="checkbox" id="border-toggle">
           Border
         </label>
+        <label class="toggle" for="transparent-toggle" style="margin-left:14px;">
+          <input type="checkbox" id="transparent-toggle">
+          Transparent
+        </label>
       </div>
 
       <div class="row">
@@ -1576,10 +1591,11 @@ const evEndInput      = $('ev-end');
 const evLocationInput = $('ev-location');
 const evDescInput     = $('ev-desc');
 
-const styleSelect  = $('style-select');
-const borderToggle = $('border-toggle');
-const sizeSelect   = $('size-select');
-const colorInput   = $('color-input');
+const styleSelect       = $('style-select');
+const borderToggle      = $('border-toggle');
+const transparentToggle = $('transparent-toggle');
+const sizeSelect        = $('size-select');
+const colorInput        = $('color-input');
 const generateBtn  = $('generate-btn');
 const downloadBtn    = $('download-btn');
 const downloadSvgBtn = $('download-svg-btn');
@@ -1881,7 +1897,7 @@ function drawLogoOnCanvas(ctx, img, actualSize, cellSize) {
 }
 
 function renderQRToCanvas(canvas, value, opts) {
-  const { targetSize, color, style, withBorder, logoImg } = opts;
+  const { targetSize, color, style, withBorder, transparent, logoImg } = opts;
   const useHigh = !!logoImg || style === 'liquid';
   const qr = buildQR(value, useHigh ? 'H' : 'M');
   const modules = buildMatrix(qr);
@@ -1902,8 +1918,11 @@ function renderQRToCanvas(canvas, value, opts) {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, actualSize, actualSize);
+  ctx.clearRect(0, 0, actualSize, actualSize);
+  if (!transparent) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, actualSize, actualSize);
+  }
 
   ctx.fillStyle = color;
   const offset = margin * cellSize;
@@ -1963,7 +1982,7 @@ function imageToDataUrlSafe(img) {
 }
 
 function renderQRToSVG(value, opts) {
-  const { targetSize, color, style, withBorder, logoImg, logoDataUrl } = opts;
+  const { targetSize, color, style, withBorder, transparent, logoImg, logoDataUrl } = opts;
   const useHigh = !!logoImg || style === 'liquid';
   const qr = buildQR(value, useHigh ? 'H' : 'M');
   const modules = buildMatrix(qr);
@@ -1977,7 +1996,7 @@ function renderQRToSVG(value, opts) {
   const xml = [];
   xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   xml.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sizeUnits} ${sizeUnits}" width="${targetSize}" height="${targetSize}" role="img" aria-label="QR code">`);
-  xml.push(`<rect width="100%" height="100%" fill="#ffffff"/>`);
+  if (!transparent) xml.push(`<rect width="100%" height="100%" fill="#ffffff"/>`);
 
   if (style === 'square') {
     const rects = [];
@@ -2470,7 +2489,27 @@ function validateScan(canvas, expectedValue) {
   if (typeof jsQR !== 'function') return null;
   try {
     const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let imageData;
+    // If the canvas has any transparency, composite onto white in a temp
+    // canvas first — jsQR reads transparent pixels as black (RGB 0,0,0)
+    // and would otherwise fail to decode a transparent-background code.
+    let needsComposite = false;
+    try {
+      const sample = ctx.getImageData(0, 0, 1, 1).data;
+      if (sample[3] < 255) needsComposite = true;
+    } catch {}
+    if (needsComposite) {
+      const temp = document.createElement('canvas');
+      temp.width = canvas.width;
+      temp.height = canvas.height;
+      const tctx = temp.getContext('2d');
+      tctx.fillStyle = '#ffffff';
+      tctx.fillRect(0, 0, temp.width, temp.height);
+      tctx.drawImage(canvas, 0, 0);
+      imageData = tctx.getImageData(0, 0, temp.width, temp.height);
+    } else {
+      imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    }
     const result = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
     if (!result) return { ok: false, reason: 'no-decode' };
     if (result.data === expectedValue) return { ok: true };
@@ -2486,11 +2525,12 @@ function validateScan(canvas, expectedValue) {
 
 function getRenderOpts() {
   return {
-    targetSize: parseInt(sizeSelect.value, 10),
-    color:      colorInput.value,
-    style:      styleSelect.value,
-    withBorder: borderToggle.checked,
-    logoImg:    currentLogo ? currentLogo.image : null,
+    targetSize:  parseInt(sizeSelect.value, 10),
+    color:       colorInput.value,
+    style:       styleSelect.value,
+    withBorder:  borderToggle.checked,
+    transparent: transparentToggle.checked,
+    logoImg:     currentLogo ? currentLogo.image : null,
     logoDataUrl: currentLogo ? currentLogo.dataUrl : null
   };
 }
@@ -2505,6 +2545,7 @@ function generate() {
   clearError();
   try {
     renderQRToCanvas(qrCanvas, result.value, getRenderOpts());
+    qrCanvas.classList.toggle('transparent-bg', transparentToggle.checked);
     currentValue = result.value;
     qrUrlEl.textContent = result.label;
     qrDisplay.classList.add('visible');
@@ -2758,6 +2799,7 @@ function saveLastSettings() {
     style: styleSelect.value,
     size: sizeSelect.value,
     border: borderToggle.checked,
+    transparent: transparentToggle.checked,
     color: colorInput.value,
     logo: logoSelect.value === 'custom' ? null : logoSelect.value,
     type
@@ -2775,6 +2817,7 @@ async function restoreLastSettings() {
   if (data.style) styleSelect.value = data.style;
   if (data.size)  sizeSelect.value  = data.size;
   if (typeof data.border === 'boolean') borderToggle.checked = data.border;
+  if (typeof data.transparent === 'boolean') transparentToggle.checked = data.transparent;
   if (data.color) colorInput.value = data.color;
   if (data.type && typePanels[data.type]) {
     typeSelect.value = data.type;
@@ -2884,6 +2927,7 @@ function pushRecent(value, label) {
     color: colorInput.value,
     style: styleSelect.value,
     border: borderToggle.checked,
+    transparent: transparentToggle.checked,
     size: sizeSelect.value,
     logoKey: logoSelect.value,
     logoDataUrl: (logoSelect.value === 'custom' && currentLogo) ? currentLogo.dataUrl : null,
@@ -2957,6 +3001,7 @@ async function restoreRecent(item) {
   clearError();
   styleSelect.value = item.style;
   borderToggle.checked = item.border;
+  transparentToggle.checked = !!item.transparent;
   sizeSelect.value = item.size;
   colorInput.value = item.color;
 
@@ -2988,6 +3033,7 @@ async function restoreRecent(item) {
 
   try {
     renderQRToCanvas(qrCanvas, item.value, getRenderOpts());
+    qrCanvas.classList.toggle('transparent-bg', transparentToggle.checked);
     currentValue = item.value;
     qrUrlEl.textContent = item.label;
     qrDisplay.classList.add('visible');
@@ -3255,7 +3301,7 @@ importProfilesInput.addEventListener('change', (e) => {
 recentClearBtn.addEventListener('click', clearRecent);
 
 // Persist appearance settings on change
-[styleSelect, sizeSelect, borderToggle].forEach(el => {
+[styleSelect, sizeSelect, borderToggle, transparentToggle].forEach(el => {
   el.addEventListener('change', saveLastSettings);
 });
 typeSelect.addEventListener('change', saveLastSettings);
@@ -3313,7 +3359,7 @@ const liveUpdateInputs = [
   smsNumberInput, smsBodyInput,
   vcFirstInput, vcLastInput, vcOrgInput, vcTitleInput, vcPhoneInput, vcMobileInput, vcEmailInput, vcUrlInput,
   evTitleInput, evStartInput, evEndInput, evLocationInput, evDescInput,
-  styleSelect, sizeSelect, borderToggle, colorInput
+  styleSelect, sizeSelect, borderToggle, transparentToggle, colorInput
 ];
 liveUpdateInputs.forEach(el => {
   const event = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'datetime-local') ? 'change' : 'input';
