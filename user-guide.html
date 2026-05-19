@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Guide &mdash; Red Hat EBC QR Code Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&family=Red+Hat+Text:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rh-red: #EE0000;
+  --rh-red-dark: #BE0000;
+  --rh-black: #151515;
+  --rh-text: #1F1F1F;
+  --rh-grey-90: #3C3F42;
+  --rh-grey-60: #6A6E73;
+  --rh-grey-30: #B8BBBE;
+  --rh-grey-20: #D2D2D2;
+  --rh-grey-10: #E0E0E0;
+  --rh-grey-5:  #F2F2F2;
+  --rh-bg:      #F5F5F5;
+  --rh-white:   #FFFFFF;
+  --rh-warn: #B85700;
+  --rh-warn-bg: #FFF3E0;
+  --rh-success: #1E4F18;
+  --rh-success-bg: #E8F5E9;
+  --display-font: 'Red Hat Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --text-font:    'Red Hat Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--text-font);
+  margin: 0;
+  padding: 0;
+  background: var(--rh-bg);
+  color: var(--rh-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* ─── Accessibility ─────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  background: var(--rh-red);
+  color: var(--rh-white);
+  padding: 10px 16px;
+  font-family: var(--display-font);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 3px;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 8px; outline: 2px solid var(--rh-white); outline-offset: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--rh-red);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Topbar ────────────────────────────────────────────── */
+.topbar {
+  background: var(--rh-black);
+  padding: 16px 24px;
+  border-bottom: 4px solid var(--rh-red);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar .ebc-logo {
+  height: 56px;
+  width: auto;
+  background: var(--rh-white);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.topbar .brand-text {
+  color: var(--rh-white);
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.topbar .open-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--rh-red);
+  color: var(--rh-white);
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 9px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  margin-left: auto;
+  transition: background 0.15s ease;
+}
+
+.topbar .open-app:hover { background: var(--rh-red-dark); color: var(--rh-white); }
+
+/* ─── Layout ────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  max-width: 1180px;
+  margin: 0 auto;
+  background: var(--rh-white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+  min-height: calc(100vh - 76px - 64px);
+}
+
+.sidebar {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  padding: 32px 20px 32px 28px;
+  border-right: 1px solid var(--rh-grey-10);
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  background: var(--rh-white);
+}
+
+.sidebar h2 {
+  font-family: var(--display-font);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rh-grey-60);
+  margin: 0 0 12px;
+}
+
+.sidebar ol {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  counter-reset: section;
+}
+
+.sidebar li {
+  margin: 0;
+  counter-increment: section;
+}
+
+.sidebar a {
+  display: block;
+  padding: 7px 12px;
+  color: var(--rh-text);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  font-family: var(--text-font);
+  font-size: 14px;
+  line-height: 1.3;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.sidebar a::before {
+  content: counter(section) ". ";
+  color: var(--rh-grey-60);
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px;
+}
+
+.sidebar a:hover {
+  background: var(--rh-grey-5);
+  color: var(--rh-black);
+}
+
+.sidebar a.active {
+  border-left-color: var(--rh-red);
+  background: #FFF5F5;
+  color: var(--rh-black);
+  font-weight: 500;
+}
+
+.sidebar a.active::before {
+  color: var(--rh-red);
+  font-weight: 700;
+}
+
+/* ─── Main content ──────────────────────────────────────── */
+main {
+  padding: 40px 48px 64px;
+  max-width: 820px;
+  min-width: 0;
+}
+
+.hero {
+  margin-bottom: 16px;
+  padding-bottom: 32px;
+  border-bottom: 3px solid var(--rh-red);
+}
+
+.hero .eyebrow {
+  font-family: var(--display-font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rh-red);
+  margin: 0 0 8px;
+}
+
+h1 {
+  font-family: var(--display-font);
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.05;
+  margin: 0 0 12px;
+  color: var(--rh-black);
+  letter-spacing: -0.015em;
+}
+
+.hero p {
+  color: var(--rh-grey-60);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 60ch;
+}
+
+section.guide-section {
+  padding: 36px 0 8px;
+  scroll-margin-top: 96px;
+}
+
+section.guide-section + section.guide-section {
+  border-top: 1px solid var(--rh-grey-10);
+}
+
+h2 {
+  font-family: var(--display-font);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 18px;
+  color: var(--rh-black);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+h2 .section-number {
+  color: var(--rh-red);
+  font-weight: 900;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+h3 {
+  font-family: var(--display-font);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 28px 0 12px;
+  color: var(--rh-black);
+}
+
+p, li {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--rh-text);
+}
+
+p { margin: 0 0 14px; }
+
+ul, ol {
+  padding-left: 22px;
+  margin: 12px 0 16px;
+}
+
+li { margin-bottom: 6px; }
+
+a {
+  color: var(--rh-red);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover { color: var(--rh-red-dark); }
+
+strong { color: var(--rh-black); font-weight: 700; }
+em     { font-style: italic; }
+
+/* ─── Code ──────────────────────────────────────────────── */
+code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  background: var(--rh-grey-5);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-size: 0.92em;
+  color: var(--rh-black);
+  border: 1px solid var(--rh-grey-10);
+}
+
+pre {
+  background: var(--rh-black);
+  color: #E8E8E8;
+  padding: 16px 18px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  border-left: 3px solid var(--rh-red);
+  margin: 16px 0 20px;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  border: none;
+  border-radius: 0;
+}
+
+/* ─── Tables ────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 18px 0 22px;
+  border: 1px solid var(--rh-grey-10);
+  border-radius: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+th, td {
+  text-align: left;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--rh-grey-10);
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+tr:last-child td { border-bottom: none; }
+
+th {
+  background: var(--rh-grey-5);
+  font-family: var(--display-font);
+  font-weight: 700;
+  color: var(--rh-black);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--rh-grey-20);
+}
+
+tbody tr:hover { background: #FAFAFA; }
+
+td code { background: var(--rh-white); }
+
+/* ─── Callouts ──────────────────────────────────────────── */
+.callout {
+  border-left: 3px solid var(--rh-red);
+  background: #FFF5F5;
+  padding: 14px 16px;
+  border-radius: 0 3px 3px 0;
+  margin: 18px 0 20px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.callout p { margin: 0 0 8px; }
+.callout p:last-child { margin-bottom: 0; }
+.callout pre { margin: 10px 0 0; }
+.callout code { background: var(--rh-white); }
+
+.callout .label {
+  display: inline-block;
+  background: var(--rh-red);
+  color: var(--rh-white);
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-right: 10px;
+  vertical-align: 2px;
+}
+
+.callout.note {
+  border-left-color: var(--rh-grey-60);
+  background: var(--rh-grey-5);
+}
+
+.callout.note .label {
+  background: var(--rh-grey-60);
+}
+
+.callout.warn {
+  border-left-color: var(--rh-warn);
+  background: var(--rh-warn-bg);
+}
+
+.callout.warn .label {
+  background: var(--rh-warn);
+}
+
+/* ─── Badge spans for validation table ──────────────────── */
+.badge {
+  display: inline-block;
+  font-family: var(--display-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.badge.ok   { background: var(--rh-success-bg); color: var(--rh-success); border-left: 3px solid var(--rh-success); }
+.badge.warn { background: var(--rh-warn-bg);    color: var(--rh-warn);    border-left: 3px solid var(--rh-warn); }
+
+/* ─── Footer ────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--rh-grey-60);
+  background: var(--rh-bg);
+}
+
+footer .rh-mark {
+  color: var(--rh-red);
+  font-weight: 700;
+}
+
+/* ─── Back-to-top ───────────────────────────────────────── */
+.back-to-top {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--display-font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rh-red);
+  text-decoration: none;
+}
+
+.back-to-top:hover { text-decoration: underline; }
+
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    box-shadow: none;
+  }
+  .sidebar {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--rh-grey-10);
+    padding: 18px 20px 14px;
+    overflow: visible;
+  }
+  .sidebar h2 { margin-bottom: 8px; }
+  .sidebar ol { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sidebar li { flex: 0 0 auto; }
+  .sidebar a {
+    padding: 6px 12px;
+    border-left: none;
+    border-radius: 3px;
+    background: var(--rh-grey-5);
+  }
+  .sidebar a.active {
+    background: var(--rh-red);
+    color: var(--rh-white);
+  }
+  .sidebar a.active::before { color: rgba(255, 255, 255, 0.8); }
+  main { padding: 28px 22px 48px; max-width: 100%; }
+  h1 { font-size: 32px; }
+  h2 { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar .ebc-logo { height: 44px; }
+  .topbar .brand-text { display: none; }
+  .topbar .open-app { font-size: 13px; padding: 8px 12px; }
+  h1 { font-size: 28px; }
+}
+
+/* ─── Print ─────────────────────────────────────────────── */
+@media print {
+  body { background: var(--rh-white); }
+  .topbar, .sidebar, .skip-link, .back-to-top, footer .rh-mark + br, .topbar .open-app { display: none !important; }
+  .layout {
+    display: block;
+    box-shadow: none;
+    max-width: 100%;
+    margin: 0;
+  }
+  main { padding: 0; max-width: 100%; }
+  .hero { border-bottom-width: 2px; padding-bottom: 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; page-break-after: avoid; }
+  h3 { font-size: 15px; page-break-after: avoid; }
+  table, pre, .callout, .table-wrap { page-break-inside: avoid; }
+  pre { background: #F5F5F5; color: var(--rh-black); border-left-color: var(--rh-red); }
+  pre code { color: var(--rh-black); }
+  a { color: var(--rh-black); text-decoration: none; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: var(--rh-grey-60); }
+  section.guide-section { padding: 18px 0 4px; }
+  footer { padding: 12px; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <img src="Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png" alt="Red Hat Executive Briefing Center Team" class="ebc-logo">
+  <span class="brand-text">QR Code Generator &middot; User Guide</span>
+  <a href="index.html" class="open-app">Open generator &rarr;</a>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Table of contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#getting-started">Getting started</a></li>
+      <li><a href="#brand-profiles">Brand profiles</a></li>
+      <li><a href="#single-generation">Single generation</a></li>
+      <li><a href="#logo">Logo selection</a></li>
+      <li><a href="#appearance">Appearance</a></li>
+      <li><a href="#output">Output &amp; validation</a></li>
+      <li><a href="#batch">Batch generation</a></li>
+      <li><a href="#keyboard">Keyboard &amp; accessibility</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+      <li><a href="#files">Files</a></li>
+    </ol>
+  </nav>
+
+  <main id="main">
+    <div class="hero">
+      <p class="eyebrow">User Guide</p>
+      <h1>Red Hat EBC QR Code Generator</h1>
+      <p>A web-based tool for creating branded QR codes for URLs, WiFi networks, email, SMS, contact cards, calendar events, and bulk batches &mdash; built for the Red Hat Executive Briefing Center team.</p>
+    </div>
+
+    <!-- ─── 1. Getting started ─── -->
+    <section class="guide-section" id="getting-started">
+      <h2><span class="section-number">01</span>Getting started</h2>
+      <p>Open <code>index.html</code> in any modern browser (Chrome, Safari, Firefox, or Edge). All processing happens in your browser &mdash; nothing is uploaded to a server.</p>
+      <div class="callout tip">
+        <span class="label">Tip</span>
+        For best results, serve the folder from a simple local web server rather than opening the file directly. This unlocks logo embedding in SVG exports, scan validation, and clipboard copy. From the project directory:
+<pre><code>python3 -m http.server 8000
+# then open http://localhost:8000 in your browser</code></pre>
+      </div>
+      <p>The page is laid out top-to-bottom:</p>
+      <ul>
+        <li><strong>Top bar</strong> &mdash; Red Hat EBC logo (always visible).</li>
+        <li><strong>Card</strong> &mdash; content type, brand profile, content fields, logo, appearance, and the generate button.</li>
+        <li><strong>Output panel</strong> &mdash; appears after generation with download and copy options.</li>
+      </ul>
+    </section>
+
+    <!-- ─── 2. Brand profiles ─── -->
+    <section class="guide-section" id="brand-profiles">
+      <h2><span class="section-number">02</span>Quick start: Brand profiles</h2>
+      <p>The fastest way to create a branded QR code:</p>
+      <ol>
+        <li>Pick a <strong>Brand profile</strong> chip at the top of the card:
+          <ul>
+            <li><strong>None</strong> &mdash; no logo, black QR code (the default).</li>
+            <li><strong>Red Hat EBC</strong> &mdash; applies the Red Hat EBC logo with Red Hat red (<code>#EE0000</code>).</li>
+            <li><strong>The Open Accelerator</strong> &mdash; applies the TOA logo with TOA yellow (<code>#FFC600</code>).</li>
+          </ul>
+        </li>
+        <li>Enter your URL in the <strong>URL or text</strong> field.</li>
+        <li>Click <strong>Generate QR code</strong>.</li>
+      </ol>
+      <p>The selected chip stays highlighted in its brand color. If you later change the logo, color, or upload a custom file, the chip auto-deselects to show you've gone off-preset; click the chip again to snap back.</p>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 3. Single generation ─── -->
+    <section class="guide-section" id="single-generation">
+      <h2><span class="section-number">03</span>Single QR code generation</h2>
+      <p>The <strong>Single</strong> tab (selected by default) creates one QR code at a time. Use the <strong>QR code type</strong> dropdown to pick what you're encoding.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>What it produces</th>
+              <th>Typical use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>URL / text</td><td>Opens a URL or shows free-form text</td><td>Websites, landing pages, plain text</td></tr>
+            <tr><td>WiFi</td><td>One-tap connection to a WiFi network</td><td>Guest WiFi cards, EBC reception posters</td></tr>
+            <tr><td>Email</td><td>Opens an email composer with optional subject and body</td><td>Contact cards, feedback links</td></tr>
+            <tr><td>SMS</td><td>Opens an SMS composer with optional message</td><td>Opt-in numbers, quick contact</td></tr>
+            <tr><td>Contact (vCard)</td><td>Adds a contact to the user's address book</td><td>Business cards, name badges</td></tr>
+            <tr><td>Calendar event</td><td>Adds an event to the user's calendar</td><td>Event posters, save-the-date materials</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.1 URL / text</h3>
+      <p>Enter a URL or any text in the single field. When the URL contains keywords like <code>redhat.com</code>, <code>ebc.redhat.com</code>, or <code>openaccelerator</code>, a banner appears suggesting the matching brand logo &mdash; click <strong>Apply</strong> to add it, or <strong>Dismiss</strong> to keep your current selection.</p>
+
+      <h3>3.2 WiFi</h3>
+      <p>Fields:</p>
+      <ul>
+        <li><strong>Network name (SSID)</strong> &mdash; required.</li>
+        <li><strong>Password</strong> &mdash; click <em>Show</em> to reveal while typing.</li>
+        <li><strong>Security</strong> &mdash; WPA / WPA2 / WPA3 covers virtually every modern network. WEP is legacy. <em>None</em> is for open networks.</li>
+        <li><strong>Hidden</strong> &mdash; check if the SSID is not broadcast.</li>
+      </ul>
+
+      <h3>3.3 Email</h3>
+      <ul>
+        <li><strong>Recipient email</strong> &mdash; required.</li>
+        <li><strong>Subject</strong> &mdash; optional; pre-fills the email subject line.</li>
+        <li><strong>Body</strong> &mdash; optional; pre-fills the email body.</li>
+      </ul>
+      <p>The QR code uses the standard <code>mailto:</code> URL with proper encoding.</p>
+
+      <h3>3.4 SMS</h3>
+      <ul>
+        <li><strong>Phone number</strong> &mdash; required. International format (<code>+1234567890</code>) gives the best scanner compatibility.</li>
+        <li><strong>Message</strong> &mdash; optional; pre-fills the SMS body.</li>
+      </ul>
+      <p>If a message is provided, the <code>SMSTO:</code> format is used (broadest compatibility). Otherwise the standard <code>sms:</code> URL is used.</p>
+
+      <h3>3.5 Contact (vCard)</h3>
+      <p>Provide at least a name or organization. All other fields are optional:</p>
+      <ul>
+        <li><strong>Name</strong> &mdash; first and last.</li>
+        <li><strong>Work</strong> &mdash; organization, title.</li>
+        <li><strong>Contact</strong> &mdash; phone, mobile, email, website.</li>
+      </ul>
+      <p>The output is a vCard 3.0 payload that imports cleanly into iOS Contacts, Android Contacts, Outlook, and most other address books.</p>
+
+      <h3>3.6 Calendar event</h3>
+      <ul>
+        <li><strong>Event title</strong> &mdash; required.</li>
+        <li><strong>Starts</strong> &mdash; required, your local timezone.</li>
+        <li><strong>Ends</strong> &mdash; optional.</li>
+        <li><strong>Location</strong>, <strong>Description</strong> &mdash; optional.</li>
+      </ul>
+      <p>Times are converted to UTC and packaged as a <code>VCALENDAR/VEVENT</code> payload, compatible with Google Calendar, Apple Calendar, and Outlook.</p>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 4. Logo ─── -->
+    <section class="guide-section" id="logo">
+      <h2><span class="section-number">04</span>Logo selection</h2>
+      <p>A logo embedded in the center of the QR code reinforces your brand. The generator automatically raises error correction to the highest level (~30% recovery) whenever a logo is present, so the code remains scannable.</p>
+
+      <h3>Preset logos</h3>
+      <p>Available from the <strong>Logo</strong> dropdown:</p>
+      <ul>
+        <li><strong>Red Hat EBC</strong> &mdash; the team logo (color).</li>
+        <li><strong>Red Hat</strong> &mdash; standard Red Hat fedora + wordmark.</li>
+        <li><strong>Red Hat (reverse)</strong> &mdash; light version, intended for dark QR codes.</li>
+        <li><strong>The Open Accelerator</strong> &mdash; black wordmark version.</li>
+        <li><strong>The Open Accelerator (reverse)</strong> &mdash; light version for dark backgrounds.</li>
+      </ul>
+
+      <h3>Custom upload</h3>
+      <ol>
+        <li>Select <strong>Upload custom&hellip;</strong> from the Logo dropdown.</li>
+        <li>Click <strong>Choose image&hellip;</strong> and pick a PNG, JPG, SVG, or WebP file (up to 2&nbsp;MB).</li>
+        <li>The logo is embedded and the QR regenerates automatically.</li>
+      </ol>
+
+      <h3>Auto-suggestion</h3>
+      <p>When the URL/text field contains a recognized keyword (e.g. <code>redhat.com</code>, <code>ebc.redhat.com</code>, <code>openaccelerator</code>), a red-bordered banner appears suggesting the matching logo. This is purely a convenience &mdash; clicking <strong>Dismiss</strong> keeps your current setting.</p>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 5. Appearance ─── -->
+    <section class="guide-section" id="appearance">
+      <h2><span class="section-number">05</span>Appearance: style, border, size, color</h2>
+
+      <h3>Style</h3>
+      <ul>
+        <li><strong>Square</strong> &mdash; classic, sharp QR modules. Highest scanner compatibility.</li>
+        <li><strong>Liquid</strong> &mdash; rounded modules with circular finder patterns. More modern look; uses high error correction automatically.</li>
+      </ul>
+
+      <h3>Border</h3>
+      <p>Toggle a thin rounded border around the QR code. Useful for print contexts where you want a defined edge.</p>
+
+      <h3>Size</h3>
+      <ul>
+        <li><strong>Small</strong> &mdash; 240&nbsp;px.</li>
+        <li><strong>Medium</strong> &mdash; 360&nbsp;px (default).</li>
+        <li><strong>Large</strong> &mdash; 520&nbsp;px.</li>
+        <li><strong>Extra large</strong> &mdash; 720&nbsp;px.</li>
+      </ul>
+      <p>For print, choose Extra large or download as SVG (resolution-independent).</p>
+
+      <h3>Color</h3>
+      <p>Click the color swatch to pick any color for the dark modules. For best scannability:</p>
+      <ul>
+        <li>Use dark, high-contrast colors against a white background.</li>
+        <li>Avoid yellows, light blues, and muted tones &mdash; scanners may fail to detect the modules.</li>
+        <li>The Brand profile chips set scannable colors automatically (Red Hat red is the lightest tested-good color in the palette).</li>
+      </ul>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 6. Output ─── -->
+    <section class="guide-section" id="output">
+      <h2><span class="section-number">06</span>Output, downloads, and validation</h2>
+      <p>After generation, the QR code appears below the card with three actions.</p>
+
+      <h3>Download options</h3>
+      <ul>
+        <li><strong>Download PNG</strong> &mdash; raster image with the logo baked in. Best for digital use (web pages, email signatures, screen-share decks).</li>
+        <li><strong>Download SVG</strong> &mdash; vector format with the logo embedded. Best for print at any size &mdash; scales without quality loss.</li>
+        <li><strong>Copy image</strong> &mdash; copies the PNG to your clipboard for pasting into Slack, decks, documents, etc.</li>
+      </ul>
+      <p>Filenames include the logo key, e.g. <code>qrcode-ebc.png</code> or <code>qrcode-toa.svg</code>.</p>
+
+      <h3>Validation badge</h3>
+      <p>Immediately under the QR code, one of three statuses appears:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Badge</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="badge ok">&check; Verified scannable</span></td><td>The generated image was decoded successfully &mdash; what you see is what scanners will read.</td></tr>
+            <tr><td><span class="badge warn">&#9888; Could not decode</span></td><td>The logo + content combination has damaged the code beyond what error correction can recover. Try a smaller logo, simpler content, or larger size.</td></tr>
+            <tr><td><span class="badge warn">&#9888; Content differs</span></td><td>Rare. The decoder returned something different from your input. Regenerate; if it persists, file a bug.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout note">
+        <span class="label">Note</span>
+        If the page is opened via <code>file://</code>, the browser may block reading the canvas and validation is silently skipped (the badge won't appear). Serving the page via <code>http://</code> resolves this.
+      </div>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 7. Batch ─── -->
+    <section class="guide-section" id="batch">
+      <h2><span class="section-number">07</span>Batch generation</h2>
+      <p>For dozens or hundreds of QR codes at once, click the <strong>Batch</strong> tab.</p>
+
+      <h3>Source: pasted list</h3>
+      <ol>
+        <li>Set <strong>Source</strong> to <em>Paste list</em>.</li>
+        <li>Paste your URLs into the textarea &mdash; one per line.</li>
+        <li>Filenames are auto-generated from each URL's host and last path segment (e.g. <code>redhat.com-customer-a</code>).</li>
+      </ol>
+
+      <h3>Source: CSV upload</h3>
+      <ol>
+        <li>Set <strong>Source</strong> to <em>Upload CSV</em>.</li>
+        <li>Click <strong>Choose CSV&hellip;</strong> and pick a <code>.csv</code> file.</li>
+        <li>Each row should have two columns: <code>filename,url</code>. A header row is optional.</li>
+      </ol>
+      <p>Example:</p>
+<pre><code>filename,url
+customer-a,https://www.redhat.com/briefings/customer-a
+customer-b,https://www.redhat.com/briefings/customer-b
+customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
+
+      <h3>Output format</h3>
+      <ul>
+        <li><strong>PNG</strong> &mdash; one PNG per row.</li>
+        <li><strong>SVG</strong> &mdash; one SVG per row.</li>
+        <li><strong>PNG + SVG</strong> &mdash; both for every row.</li>
+      </ul>
+
+      <h3>Generating</h3>
+      <p>Click <strong>Generate ZIP</strong> (the primary button changes label in Batch mode). A progress bar shows how many codes have been processed. When complete, a ZIP file named <code>qrcodes-YYYY-MM-DD.zip</code> downloads automatically.</p>
+      <p>The current <strong>Logo</strong> and <strong>Appearance</strong> settings apply to every code in the batch.</p>
+      <div class="callout warn">
+        <span class="label">Heads up</span>
+        500 items maximum per batch. For larger jobs, split into multiple ZIPs.
+      </div>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 8. Keyboard ─── -->
+    <section class="guide-section" id="keyboard">
+      <h2><span class="section-number">08</span>Keyboard and accessibility</h2>
+      <p>The interface is fully keyboard-navigable.</p>
+      <ul>
+        <li><strong>Tab</strong> / <strong>Shift+Tab</strong> &mdash; move between fields.</li>
+        <li><strong>Enter</strong> &mdash; generate the QR code when focused on a single-line input.</li>
+        <li><strong>Arrow Left</strong> / <strong>Arrow Right</strong> &mdash; switch between the <em>Single</em> and <em>Batch</em> tabs when one is focused.</li>
+        <li><strong>Space</strong> / <strong>Enter</strong> &mdash; toggle checkboxes and click buttons.</li>
+      </ul>
+      <p>Accessibility features:</p>
+      <ul>
+        <li>Skip link to main content (visible on first Tab press).</li>
+        <li>Visible focus outlines in Red Hat red.</li>
+        <li>ARIA <code>radiogroup</code> for Brand profile chips and <code>tablist</code> for mode tabs.</li>
+        <li>Live regions announce errors, suggestions, validation status, and batch progress.</li>
+        <li>The QR <code>&lt;canvas&gt;</code> and exported SVG carry descriptive labels for screen readers.</li>
+        <li>Honors <code>prefers-reduced-motion</code>.</li>
+      </ul>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 9. Troubleshooting ─── -->
+    <section class="guide-section" id="troubleshooting">
+      <h2><span class="section-number">09</span>Troubleshooting</h2>
+
+      <h3>My QR code won't scan from a phone</h3>
+      <ul>
+        <li>Increase contrast &mdash; switch to a darker module color.</li>
+        <li>Try a larger size (Extra large) and avoid pixelation when reprinting.</li>
+        <li>Reduce or remove the logo.</li>
+        <li>Shorten the encoded text &mdash; long URLs produce denser, harder-to-scan codes. Consider a URL shortener for very long links.</li>
+      </ul>
+
+      <h3>The validation badge says "Could not decode"</h3>
+      <p>The logo + content combination is too aggressive. Try, in order:</p>
+      <ol>
+        <li>Reduce the size of your custom logo before uploading.</li>
+        <li>Switch from <strong>Liquid</strong> to <strong>Square</strong> style.</li>
+        <li>Increase the size to Extra large.</li>
+        <li>Shorten the URL or text.</li>
+      </ol>
+
+      <h3>Logos don't embed when I download SVG</h3>
+      <p>This happens when the page is opened via <code>file://</code> because browsers taint the canvas for security. The SVG still downloads, but the logo <code>&lt;image&gt;</code> references the original filename rather than embedding the bytes &mdash; so the logo only shows when the SVG sits alongside the original logo file.</p>
+      <p>Fix: serve the project over <code>http://</code> (see <a href="#getting-started">Getting started</a>).</p>
+
+      <h3>"Copy image" doesn't work</h3>
+      <p>Your browser may not implement the Clipboard <code>write()</code> API. Use <strong>Download PNG</strong> and paste the file directly into your destination.</p>
+
+      <h3>The Brand profile chip stays deselected</h3>
+      <p>This is expected after any manual change to the logo dropdown, file upload, or color picker. Click the desired profile chip again to re-apply its preset.</p>
+
+      <h3>Batch generation seems frozen</h3>
+      <p>A 500-item batch can take 30+ seconds, depending on QR size and your CPU. The progress bar updates roughly every four items &mdash; if the bar is moving, give it another moment. If it's truly stuck, refresh the page and try a smaller batch.</p>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+
+    <!-- ─── 10. Files ─── -->
+    <section class="guide-section" id="files">
+      <h2><span class="section-number">10</span>Files in this project</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>index.html</code></td><td>The QR code generator app &mdash; open this in a browser</td></tr>
+            <tr><td><code>user-guide.html</code></td><td>This guide (branded)</td></tr>
+            <tr><td><code>USER_GUIDE.md</code></td><td>Markdown source of the guide</td></tr>
+            <tr><td><code>Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png</code></td><td>Red Hat EBC team logo</td></tr>
+            <tr><td><code>Logo-Red_Hat-A-RGB.Small-logo-transparent.png</code></td><td>Red Hat standard logo</td></tr>
+            <tr><td><code>Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png</code></td><td>Red Hat reverse (for dark backgrounds)</td></tr>
+            <tr><td><code>Logo-OpenAccelerator-A-Standard-RGB.png</code></td><td>The Open Accelerator standard logo</td></tr>
+            <tr><td><code>Logo-OpenAccelerator-A-Reverse-RGB.png</code></td><td>The Open Accelerator reverse logo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Distribution</h3>
+      <p>To share the tool with colleagues, copy the entire folder (or zip it). All assets are local &mdash; no internet connection is required at runtime except for the Google Fonts and the three CDN libraries (qrcode-generator, jsQR, JSZip).</p>
+      <p>For an internal deployment, drop the folder on any static web host (S3, GitHub Pages, an internal Apache or nginx, etc.) and share the URL.</p>
+      <a class="back-to-top" href="#main">&uarr; Back to top</a>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <span class="rh-mark">Red Hat</span> &middot; Executive Briefing Center Team
+</footer>
+
+<script>
+// Scroll-spy: highlight current section in the sidebar
+const sections = document.querySelectorAll('section.guide-section');
+const navLinks = Array.from(document.querySelectorAll('.sidebar a'));
+const linkByHash = new Map(navLinks.map(a => [a.getAttribute('href'), a]));
+
+function setActive(id) {
+  navLinks.forEach(l => l.classList.remove('active'));
+  const target = linkByHash.get('#' + id);
+  if (target) target.classList.add('active');
+}
+
+const observer = new IntersectionObserver((entries) => {
+  // Pick the most-visible section among those currently intersecting
+  const visible = entries
+    .filter(e => e.isIntersecting)
+    .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+  if (visible.length) setActive(visible[0].target.id);
+}, {
+  rootMargin: '-30% 0px -55% 0px',
+  threshold: [0, 0.25, 0.5, 0.75, 1]
+});
+
+sections.forEach(s => observer.observe(s));
+
+// Set initial active state from the URL hash or the first section
+if (location.hash && linkByHash.has(location.hash)) {
+  setActive(location.hash.slice(1));
+} else if (sections[0]) {
+  setActive(sections[0].id);
+}
+</script>
+
+</body>
+</html>

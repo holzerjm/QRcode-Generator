@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Hat EBC QR code generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&family=Red+Hat+Text:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rh-red: #EE0000;
+  --rh-red-dark: #BE0000;
+  --rh-black: #151515;
+  --rh-text: #1F1F1F;
+  --rh-grey-90: #3C3F42;
+  --rh-grey-60: #6A6E73;
+  --rh-grey-30: #B8BBBE;
+  --rh-grey-20: #D2D2D2;
+  --rh-grey-10: #E0E0E0;
+  --rh-grey-5:  #F2F2F2;
+  --rh-bg:      #F5F5F5;
+  --rh-white:   #FFFFFF;
+  --rh-error:   #C9190B;
+  --rh-success: #1E4F18;
+  --rh-success-bg: #E8F5E9;
+  --rh-warn: #B85700;
+  --rh-warn-bg: #FFF3E0;
+  --display-font: 'Red Hat Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --text-font:    'Red Hat Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--text-font);
+  margin: 0;
+  padding: 0;
+  background: var(--rh-bg);
+  color: var(--rh-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Accessibility ─────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  background: var(--rh-red);
+  color: var(--rh-white);
+  padding: 10px 16px;
+  font-family: var(--display-font);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 3px;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 8px; outline: 2px solid var(--rh-white); outline-offset: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--rh-red);
+  outline-offset: 2px;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--rh-red);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Layout ────────────────────────────────────────────── */
+.topbar {
+  background: var(--rh-black);
+  padding: 16px 24px;
+  border-bottom: 4px solid var(--rh-red);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar .ebc-logo {
+  height: 56px;
+  width: auto;
+  background: var(--rh-white);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.topbar .brand-text {
+  color: var(--rh-white);
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.topbar .topbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--rh-red);
+  color: var(--rh-white);
+  font-family: var(--display-font);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 9px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  margin-left: auto;
+  transition: background 0.15s ease;
+}
+
+.topbar .topbar-link:hover { background: var(--rh-red-dark); color: var(--rh-white); }
+
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+h1 {
+  font-family: var(--display-font);
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0 0 6px;
+  color: var(--rh-black);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: var(--rh-grey-60);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.card {
+  background: var(--rh-white);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-top: 3px solid var(--rh-red);
+}
+
+/* ─── Form elements ─────────────────────────────────────── */
+label {
+  display: block;
+  font-family: var(--text-font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rh-black);
+  margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="datetime-local"],
+textarea {
+  width: 100%;
+  font-size: 16px;
+  font-family: var(--text-font);
+  padding: 12px 14px;
+  border: 1px solid var(--rh-grey-20);
+  border-radius: 3px;
+  background: var(--rh-white);
+  color: var(--rh-text);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--rh-red);
+  box-shadow: 0 0 0 3px rgba(238, 0, 0, 0.15);
+}
+
+fieldset {
+  border: 1px solid var(--rh-grey-10);
+  border-radius: 3px;
+  padding: 12px 14px 14px;
+  margin: 0 0 14px;
+}
+
+fieldset legend {
+  padding: 0 8px;
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rh-grey-60);
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.row label {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+select {
+  font-size: 15px;
+  font-family: var(--text-font);
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--rh-grey-20);
+  border-radius: 3px;
+  background: var(--rh-white) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%236A6E73' d='M0 0l5 6 5-6z'/></svg>") no-repeat right 10px center;
+  color: var(--rh-text);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--rh-red);
+  box-shadow: 0 0 0 3px rgba(238, 0, 0, 0.15);
+}
+
+.color-input {
+  width: 40px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--rh-grey-20);
+  border-radius: 3px;
+  background: var(--rh-white);
+  cursor: pointer;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: auto;
+  color: var(--rh-text);
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--rh-red);
+  margin: 0;
+}
+
+/* ─── Buttons ───────────────────────────────────────────── */
+button {
+  font-family: var(--display-font);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  width: 100%;
+  letter-spacing: 0.01em;
+}
+
+button:active { opacity: 0.85; }
+
+button.primary {
+  background: var(--rh-red);
+  color: var(--rh-white);
+  margin-top: 20px;
+}
+
+button.primary:hover { background: var(--rh-red-dark); }
+
+button.secondary {
+  background: var(--rh-white);
+  color: var(--rh-black);
+  border: 1px solid var(--rh-black);
+}
+
+button.secondary:hover { background: var(--rh-grey-5); }
+
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Output panel ──────────────────────────────────────── */
+.qr-display {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--rh-white);
+  border-radius: 4px;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-top: 3px solid var(--rh-red);
+  display: none;
+}
+
+.qr-display.visible { display: flex; }
+
+.qr-display canvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.qr-url {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--rh-grey-60);
+  word-break: break-all;
+  text-align: center;
+  max-width: 100%;
+  white-space: pre-wrap;
+}
+
+.validation {
+  font-size: 13px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 2px;
+  width: 100%;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.validation.visible { display: flex; }
+.validation.ok    { background: var(--rh-success-bg); color: var(--rh-success); border-left: 3px solid var(--rh-success); }
+.validation.warn  { background: var(--rh-warn-bg);    color: var(--rh-warn);    border-left: 3px solid var(--rh-warn); }
+.validation.info  { background: var(--rh-grey-5);     color: var(--rh-grey-60); border-left: 3px solid var(--rh-grey-30); }
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.actions button { flex: 1; min-width: 120px; margin-top: 0; }
+
+.empty-state {
+  margin-top: 24px;
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--rh-grey-60);
+  font-size: 14px;
+  background: var(--rh-white);
+  border-radius: 4px;
+  border: 1px dashed var(--rh-grey-20);
+}
+
+.error {
+  color: var(--rh-error);
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+  padding: 8px 12px;
+  background: #FAEAE8;
+  border-left: 3px solid var(--rh-error);
+  border-radius: 2px;
+}
+
+.error.visible { display: block; }
+
+/* ─── Tabs ──────────────────────────────────────────────── */
+.mode-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--rh-grey-5);
+  border-radius: 3px;
+  padding: 3px;
+  margin-bottom: 20px;
+}
+
+.mode-tab {
+  flex: 1;
+  font-family: var(--display-font);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 12px;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: var(--rh-grey-60);
+  cursor: pointer;
+  width: auto;
+  margin: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mode-tab.active {
+  background: var(--rh-white);
+  color: var(--rh-black);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Brand profile chips ──────────────────────────────── */
+.profile-chips {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 20px;
+  flex-wrap: wrap;
+}
+.profile-chip {
+  flex: 1;
+  min-width: 130px;
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--rh-white);
+  border: 1px solid var(--rh-grey-20);
+  border-radius: 3px;
+  color: var(--rh-text);
+  font-family: var(--display-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.profile-chip:hover { background: var(--rh-grey-5); }
+.profile-chip.active {
+  background: var(--rh-grey-5);
+  border-color: var(--rh-black);
+  box-shadow: inset 0 0 0 1px var(--rh-black);
+}
+.profile-chip.active[data-profile="ebc"] {
+  border-color: var(--rh-red);
+  box-shadow: inset 0 0 0 1px var(--rh-red);
+}
+.profile-chip.active[data-profile="toa"] {
+  border-color: #B89400;
+  box-shadow: inset 0 0 0 1px #B89400;
+}
+.profile-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.section-title-flush {
+  margin: 0 0 10px;
+}
+
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+
+.type-panel { display: none; }
+.type-panel.active { display: block; }
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.field-grid .field { margin-bottom: 0; }
+@media (max-width: 480px) { .field-grid { grid-template-columns: 1fr; } }
+
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 64px; }
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--rh-red);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 8px;
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.hint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--rh-grey-60);
+  line-height: 1.5;
+}
+
+.hint code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  background: var(--rh-grey-5);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.section-divider {
+  margin: 20px 0 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rh-grey-10);
+}
+
+.section-title {
+  font-family: var(--display-font);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rh-grey-60);
+  margin-bottom: 12px;
+}
+
+/* ─── Logo section ──────────────────────────────────────── */
+.logo-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo-row select { flex: 1; min-width: 180px; }
+
+.logo-preview {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--rh-grey-20);
+  border-radius: 3px;
+  background: var(--rh-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.logo-preview img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.logo-preview.empty::after {
+  content: 'None';
+  font-size: 11px;
+  color: var(--rh-grey-30);
+}
+
+.file-input-wrap {
+  margin-top: 12px;
+  display: none;
+}
+
+.file-input-wrap.visible { display: block; }
+
+.file-input-label {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--rh-white);
+  border: 1px solid var(--rh-black);
+  border-radius: 3px;
+  font-family: var(--display-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--rh-black);
+  transition: background 0.15s ease;
+}
+
+.file-input-label:hover { background: var(--rh-grey-5); }
+
+.file-input-wrap input[type="file"],
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 13px;
+  color: var(--rh-grey-60);
+}
+
+.suggestion {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #FFF5F5;
+  border-left: 3px solid var(--rh-red);
+  border-radius: 2px;
+  font-size: 13px;
+  color: var(--rh-text);
+  display: none;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.suggestion.visible { display: flex; }
+
+.suggestion-text { flex: 1; }
+
+.suggestion button {
+  width: auto;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 13px;
+  background: var(--rh-red);
+  color: var(--rh-white);
+}
+
+.suggestion button.dismiss {
+  background: transparent;
+  color: var(--rh-grey-60);
+  border: 1px solid var(--rh-grey-20);
+}
+
+/* ─── Batch progress ────────────────────────────────────── */
+.batch-progress {
+  margin-top: 16px;
+  display: none;
+}
+.batch-progress.visible { display: block; }
+.batch-progress-bar {
+  height: 8px;
+  background: var(--rh-grey-10);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.batch-progress-fill {
+  height: 100%;
+  background: var(--rh-red);
+  width: 0%;
+  transition: width 0.15s ease;
+}
+.batch-progress-text {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--rh-grey-60);
+}
+
+footer {
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 12px;
+  color: var(--rh-grey-60);
+}
+
+footer .rh-mark {
+  color: var(--rh-red);
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar .ebc-logo { height: 44px; }
+  .topbar .brand-text { display: none; }
+  .topbar .topbar-link { font-size: 13px; padding: 8px 12px; }
+  h1 { font-size: 26px; }
+  .container { padding: 24px 16px 48px; }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <img src="Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png" alt="Red Hat Executive Briefing Center Team" class="ebc-logo">
+  <span class="brand-text">QR Code Generator</span>
+  <a href="user-guide.html" class="topbar-link">User guide &rarr;</a>
+</header>
+
+<main id="main" class="container">
+  <h1>QR code generator</h1>
+  <p class="subtitle">Create branded, scannable codes &mdash; URLs, WiFi, Email, SMS, Contacts, Calendar events, or batches &mdash; with optional Red Hat, EBC, or custom logo.</p>
+
+  <div class="card">
+    <!-- Mode tabs: Single vs Batch -->
+    <div class="mode-tabs" role="tablist" aria-label="Generation mode">
+      <button class="mode-tab active" id="mode-tab-single" type="button" role="tab" aria-selected="true" aria-controls="mode-panel-single">Single</button>
+      <button class="mode-tab" id="mode-tab-batch" type="button" role="tab" aria-selected="false" aria-controls="mode-panel-batch">Batch</button>
+    </div>
+
+    <div class="section-title section-title-flush">Brand profile</div>
+    <div class="profile-chips" role="radiogroup" aria-label="Brand profile">
+      <button class="profile-chip active" type="button" data-profile="none" role="radio" aria-checked="true">
+        <span class="profile-swatch" style="background:#151515;"></span>
+        <span>None</span>
+      </button>
+      <button class="profile-chip" type="button" data-profile="ebc" role="radio" aria-checked="false">
+        <span class="profile-swatch" style="background:#EE0000;"></span>
+        <span>Red Hat EBC</span>
+      </button>
+      <button class="profile-chip" type="button" data-profile="toa" role="radio" aria-checked="false">
+        <span class="profile-swatch" style="background:#FFC600;"></span>
+        <span>The Open Accelerator</span>
+      </button>
+    </div>
+
+    <!-- ─── SINGLE MODE ─── -->
+    <div class="mode-panel active" id="mode-panel-single" role="tabpanel" aria-labelledby="mode-tab-single">
+      <div class="field">
+        <label for="type-select">QR code type</label>
+        <select id="type-select" aria-describedby="type-help">
+          <option value="text" selected>URL / text</option>
+          <option value="wifi">WiFi</option>
+          <option value="email">Email</option>
+          <option value="sms">SMS</option>
+          <option value="vcard">Contact (vCard)</option>
+          <option value="event">Calendar event</option>
+        </select>
+        <span id="type-help" class="sr-only">Choose what kind of data the QR code should contain.</span>
+      </div>
+
+      <!-- Type: URL / text -->
+      <section class="type-panel active" id="type-panel-text" aria-label="URL or text">
+        <div class="field">
+          <label for="url-input">URL or text</label>
+          <input type="text" id="url-input" placeholder="https://www.redhat.com" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="suggestion" id="logo-suggestion" role="status" aria-live="polite">
+          <span class="suggestion-text" id="suggestion-text"></span>
+          <button type="button" id="suggestion-accept">Apply</button>
+          <button type="button" class="dismiss" id="suggestion-dismiss">Dismiss</button>
+        </div>
+      </section>
+
+      <!-- Type: WiFi -->
+      <section class="type-panel" id="type-panel-wifi" aria-label="WiFi network">
+        <div class="field">
+          <label for="wifi-ssid">Network name (SSID)</label>
+          <input type="text" id="wifi-ssid" placeholder="My WiFi" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="wifi-password">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="wifi-password" placeholder="Password" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button type="button" class="password-toggle" id="wifi-password-toggle" aria-label="Show password">Show</button>
+          </div>
+        </div>
+        <div class="row" style="margin-top:0;">
+          <label for="wifi-encryption">Security</label>
+          <select id="wifi-encryption">
+            <option value="WPA" selected>WPA / WPA2 / WPA3 (most common)</option>
+            <option value="WEP">WEP (legacy)</option>
+            <option value="nopass">None (open network)</option>
+          </select>
+          <label class="toggle" for="wifi-hidden">
+            <input type="checkbox" id="wifi-hidden">
+            Hidden
+          </label>
+        </div>
+        <p class="hint">Not sure? Leave it on WPA / WPA2 / WPA3 &mdash; that covers almost every home WiFi network.</p>
+      </section>
+
+      <!-- Type: Email -->
+      <section class="type-panel" id="type-panel-email" aria-label="Email">
+        <div class="field">
+          <label for="email-to">Recipient email</label>
+          <input type="email" id="email-to" placeholder="name@example.com" autocomplete="off" autocapitalize="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="email-subject">Subject <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+          <input type="text" id="email-subject" placeholder="Hello from Red Hat EBC" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="email-body">Body <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+          <textarea id="email-body" placeholder="Pre-filled message body…" rows="3" style="min-height:80px;font-family:var(--text-font);font-size:15px;"></textarea>
+        </div>
+      </section>
+
+      <!-- Type: SMS -->
+      <section class="type-panel" id="type-panel-sms" aria-label="SMS">
+        <div class="field">
+          <label for="sms-number">Phone number</label>
+          <input type="tel" id="sms-number" placeholder="+1 234 567 8900" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="sms-body">Message <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+          <textarea id="sms-body" placeholder="Pre-filled SMS message…" rows="3" style="min-height:80px;font-family:var(--text-font);font-size:15px;"></textarea>
+        </div>
+        <p class="hint">Use international format (e.g. <code>+1234567890</code>) for best scanner compatibility.</p>
+      </section>
+
+      <!-- Type: vCard -->
+      <section class="type-panel" id="type-panel-vcard" aria-label="Contact (vCard)">
+        <fieldset>
+          <legend>Name</legend>
+          <div class="field-grid">
+            <div class="field">
+              <label for="vc-first">First name</label>
+              <input type="text" id="vc-first" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="vc-last">Last name</label>
+              <input type="text" id="vc-last" autocomplete="off">
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Work</legend>
+          <div class="field-grid">
+            <div class="field">
+              <label for="vc-org">Organization</label>
+              <input type="text" id="vc-org" placeholder="Red Hat" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="vc-title">Title</label>
+              <input type="text" id="vc-title" autocomplete="off">
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Contact</legend>
+          <div class="field-grid">
+            <div class="field">
+              <label for="vc-phone">Phone</label>
+              <input type="tel" id="vc-phone" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="vc-mobile">Mobile</label>
+              <input type="tel" id="vc-mobile" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="vc-email">Email</label>
+              <input type="email" id="vc-email" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="vc-url">Website</label>
+              <input type="url" id="vc-url" placeholder="https://" autocomplete="off">
+            </div>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- Type: Event -->
+      <section class="type-panel" id="type-panel-event" aria-label="Calendar event">
+        <div class="field">
+          <label for="ev-title">Event title</label>
+          <input type="text" id="ev-title" placeholder="Red Hat EBC Briefing" autocomplete="off">
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="ev-start">Starts</label>
+            <input type="datetime-local" id="ev-start">
+          </div>
+          <div class="field">
+            <label for="ev-end">Ends <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+            <input type="datetime-local" id="ev-end">
+          </div>
+        </div>
+        <div class="field">
+          <label for="ev-location">Location <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+          <input type="text" id="ev-location" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="ev-desc">Description <span style="color:var(--rh-grey-60);font-weight:400;">(optional)</span></label>
+          <textarea id="ev-desc" rows="3" style="min-height:80px;font-family:var(--text-font);font-size:15px;"></textarea>
+        </div>
+        <p class="hint">Times are interpreted in your local timezone and converted to UTC for the calendar payload.</p>
+      </section>
+    </div>
+
+    <!-- ─── BATCH MODE ─── -->
+    <div class="mode-panel" id="mode-panel-batch" role="tabpanel" aria-labelledby="mode-tab-batch" hidden>
+      <p class="hint" style="margin: 0 0 14px;">Generate many QR codes at once and download them as a ZIP archive.</p>
+
+      <div class="field">
+        <label for="batch-source-select">Source</label>
+        <select id="batch-source-select">
+          <option value="paste" selected>Paste list (one URL per line)</option>
+          <option value="csv">Upload CSV (filename, url)</option>
+        </select>
+      </div>
+
+      <div class="field" id="batch-paste-wrap">
+        <label for="batch-textarea">URLs or text values</label>
+        <textarea id="batch-textarea" placeholder="https://www.redhat.com/customer-a&#10;https://www.redhat.com/customer-b&#10;https://www.redhat.com/customer-c"></textarea>
+        <p class="hint">One per line. Filenames are auto-generated from the URL.</p>
+      </div>
+
+      <div class="field" id="batch-csv-wrap" hidden>
+        <label for="batch-csv-input" class="file-input-label" style="margin-bottom:0;">Choose CSV&hellip;</label>
+        <input type="file" id="batch-csv-input" accept=".csv,text/csv">
+        <span class="file-name" id="batch-csv-name">No file selected</span>
+        <p class="hint">Each row: <code>filename,url</code> &mdash; header row optional.</p>
+      </div>
+
+      <div class="row">
+        <label for="batch-format">Format</label>
+        <select id="batch-format">
+          <option value="png" selected>PNG</option>
+          <option value="svg">SVG</option>
+          <option value="both">PNG + SVG</option>
+        </select>
+      </div>
+
+      <div class="batch-progress" id="batch-progress" aria-live="polite">
+        <div class="batch-progress-bar"><div class="batch-progress-fill" id="batch-progress-fill"></div></div>
+        <div class="batch-progress-text" id="batch-progress-text">0 / 0</div>
+      </div>
+    </div>
+
+    <!-- Shared status / error region -->
+    <div class="error" id="error-msg" role="alert" aria-live="assertive"></div>
+
+    <!-- Shared logo section -->
+    <div class="section-divider">
+      <div class="section-title">Logo</div>
+      <div class="logo-row">
+        <select id="logo-select" aria-label="Logo selection">
+          <option value="none" selected>No logo</option>
+          <option value="ebc">Red Hat EBC</option>
+          <option value="redhat">Red Hat</option>
+          <option value="redhat-reverse">Red Hat (reverse, for dark QR)</option>
+          <option value="toa">The Open Accelerator</option>
+          <option value="toa-reverse">The Open Accelerator (reverse)</option>
+          <option value="custom">Upload custom&hellip;</option>
+        </select>
+        <div class="logo-preview empty" id="logo-preview" aria-hidden="true"></div>
+      </div>
+      <div class="file-input-wrap" id="file-input-wrap">
+        <label for="logo-upload" class="file-input-label">Choose image&hellip;</label>
+        <input type="file" id="logo-upload" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+        <span class="file-name" id="file-name">PNG, JPG, SVG or WebP &middot; up to 2&nbsp;MB</span>
+      </div>
+      <p class="hint">When a logo is selected, error correction is automatically raised to ensure the code remains scannable.</p>
+    </div>
+
+    <!-- Shared appearance section -->
+    <div class="section-divider">
+      <div class="section-title">Appearance</div>
+      <div class="row" style="margin-top:0;">
+        <label for="style-select">Style</label>
+        <select id="style-select">
+          <option value="square" selected>Square</option>
+          <option value="liquid">Liquid</option>
+        </select>
+        <label class="toggle" for="border-toggle">
+          <input type="checkbox" id="border-toggle">
+          Border
+        </label>
+      </div>
+
+      <div class="row">
+        <label for="size-select">Size</label>
+        <select id="size-select">
+          <option value="240">Small</option>
+          <option value="360" selected>Medium</option>
+          <option value="520">Large</option>
+          <option value="720">Extra large</option>
+        </select>
+        <label for="color-input" style="margin-left:auto;">Color</label>
+        <input type="color" id="color-input" class="color-input" value="#151515" aria-label="QR code color">
+      </div>
+    </div>
+
+    <button class="primary" id="generate-btn" type="button">Generate QR code</button>
+  </div>
+
+  <!-- Output for single mode -->
+  <div class="qr-display" id="qr-display" aria-live="polite">
+    <canvas id="qr-canvas" aria-label="Generated QR code"></canvas>
+    <div class="qr-url" id="qr-url"></div>
+    <div class="validation" id="validation-status"></div>
+    <div class="actions">
+      <button class="secondary" id="download-btn" type="button">Download PNG</button>
+      <button class="secondary" id="download-svg-btn" type="button">Download SVG</button>
+      <button class="secondary" id="copy-btn" type="button">Copy image</button>
+    </div>
+  </div>
+
+  <div class="empty-state" id="empty-state">
+    Your QR code will appear here.
+  </div>
+</main>
+
+<footer>
+  <span class="rh-mark">Red Hat</span> &middot; Executive Briefing Center Team
+</footer>
+
+<!--
+  External libraries:
+   - qrcode-generator: QR matrix generation
+   - jsQR:            optional scan validation (post-render verification)
+   - JSZip:           ZIP archive for batch downloads
+  Subresource Integrity hashes intentionally not pinned here: the team should
+  generate hashes locally (`openssl dgst -sha384 -binary | openssl base64 -A`)
+  or vendor these scripts into the repo and add SRI before broad distribution.
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="module">
+'use strict';
+
+/* ═════════════════════════════════════════════════════════════════
+   1. Constants & configuration
+   ═════════════════════════════════════════════════════════════════ */
+
+const LOGO_PRESETS = {
+  ebc:              { src: 'Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png', label: 'Red Hat EBC' },
+  redhat:           { src: 'Logo-Red_Hat-A-RGB.Small-logo-transparent.png',                       label: 'Red Hat' },
+  'redhat-reverse': { src: 'Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png',               label: 'Red Hat (reverse)' },
+  toa:              { src: 'Logo-OpenAccelerator-A-Standard-RGB.png',                             label: 'The Open Accelerator' },
+  'toa-reverse':    { src: 'Logo-OpenAccelerator-A-Reverse-RGB.png',                              label: 'The Open Accelerator (reverse)' }
+};
+
+const SUGGESTION_RULES = [
+  { keys: ['ebc.redhat.com', 'executive-briefing', 'execbriefing', 'briefing.redhat'], preset: 'ebc',    label: 'Red Hat EBC' },
+  { keys: ['openaccelerator', 'theopenaccelerator', '/toa/', 'toa.redhat'],            preset: 'toa',    label: 'The Open Accelerator' },
+  { keys: ['redhat.com', 'redhat.dev', 'red-hat', 'redhat'],                            preset: 'redhat', label: 'Red Hat' }
+];
+
+const PROFILES = {
+  none: { logo: 'none', color: '#151515', label: 'None' },
+  ebc:  { logo: 'ebc',  color: '#EE0000', label: 'Red Hat EBC' },
+  toa:  { logo: 'toa',  color: '#FFC600', label: 'The Open Accelerator' }
+};
+
+const MAX_LOGO_BYTES = 2 * 1024 * 1024;
+const LOGO_FRACTION = 0.22;
+const BATCH_MAX_ITEMS = 500;
+
+/* ═════════════════════════════════════════════════════════════════
+   2. DOM references
+   ═════════════════════════════════════════════════════════════════ */
+
+const $ = (id) => document.getElementById(id);
+
+const modeTabSingle = $('mode-tab-single');
+const modeTabBatch  = $('mode-tab-batch');
+const modePanelSingle = $('mode-panel-single');
+const modePanelBatch  = $('mode-panel-batch');
+
+const typeSelect = $('type-select');
+const typePanels = {
+  text:  $('type-panel-text'),
+  wifi:  $('type-panel-wifi'),
+  email: $('type-panel-email'),
+  sms:   $('type-panel-sms'),
+  vcard: $('type-panel-vcard'),
+  event: $('type-panel-event')
+};
+
+const urlInput            = $('url-input');
+const wifiSsidInput       = $('wifi-ssid');
+const wifiPasswordInput   = $('wifi-password');
+const wifiEncryptionSelect= $('wifi-encryption');
+const wifiHiddenToggle    = $('wifi-hidden');
+const wifiPasswordToggle  = $('wifi-password-toggle');
+
+const emailToInput      = $('email-to');
+const emailSubjectInput = $('email-subject');
+const emailBodyInput    = $('email-body');
+
+const smsNumberInput = $('sms-number');
+const smsBodyInput   = $('sms-body');
+
+const vcFirstInput  = $('vc-first');
+const vcLastInput   = $('vc-last');
+const vcOrgInput    = $('vc-org');
+const vcTitleInput  = $('vc-title');
+const vcPhoneInput  = $('vc-phone');
+const vcMobileInput = $('vc-mobile');
+const vcEmailInput  = $('vc-email');
+const vcUrlInput    = $('vc-url');
+
+const evTitleInput    = $('ev-title');
+const evStartInput    = $('ev-start');
+const evEndInput      = $('ev-end');
+const evLocationInput = $('ev-location');
+const evDescInput     = $('ev-desc');
+
+const styleSelect  = $('style-select');
+const borderToggle = $('border-toggle');
+const sizeSelect   = $('size-select');
+const colorInput   = $('color-input');
+const generateBtn  = $('generate-btn');
+const downloadBtn    = $('download-btn');
+const downloadSvgBtn = $('download-svg-btn');
+const copyBtn        = $('copy-btn');
+const qrDisplay  = $('qr-display');
+const qrCanvas   = $('qr-canvas');
+const qrUrlEl    = $('qr-url');
+const emptyState = $('empty-state');
+const errorMsg   = $('error-msg');
+const validationEl = $('validation-status');
+
+const logoSelect    = $('logo-select');
+const logoPreview   = $('logo-preview');
+const fileInputWrap = $('file-input-wrap');
+const logoUpload    = $('logo-upload');
+const fileNameEl    = $('file-name');
+
+const suggestionEl       = $('logo-suggestion');
+const suggestionTextEl   = $('suggestion-text');
+const suggestionAcceptBtn= $('suggestion-accept');
+const suggestionDismissBtn=$('suggestion-dismiss');
+
+const profileChips = document.querySelectorAll('.profile-chip');
+
+const batchSourceSelect = $('batch-source-select');
+const batchPasteWrap    = $('batch-paste-wrap');
+const batchCsvWrap      = $('batch-csv-wrap');
+const batchTextarea     = $('batch-textarea');
+const batchCsvInput     = $('batch-csv-input');
+const batchCsvName      = $('batch-csv-name');
+const batchFormat       = $('batch-format');
+const batchProgress     = $('batch-progress');
+const batchProgressFill = $('batch-progress-fill');
+const batchProgressText = $('batch-progress-text');
+
+/* ═════════════════════════════════════════════════════════════════
+   3. State
+   ═════════════════════════════════════════════════════════════════ */
+
+let mode = 'single';                  // 'single' | 'batch'
+let type = 'text';                    // text | wifi | email | sms | vcard | event
+let currentValue = '';
+let currentLogo = null;               // { image, key, label, dataUrl? }
+let pendingSuggestionPreset = null;
+let suggestionDismissedForValue = '';
+let batchCsvText = null;
+
+/* ═════════════════════════════════════════════════════════════════
+   4. Helpers
+   ═════════════════════════════════════════════════════════════════ */
+
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.add('visible');
+}
+
+function clearError() {
+  errorMsg.classList.remove('visible');
+}
+
+function showValidation(kind, msg) {
+  validationEl.className = 'validation visible ' + kind;
+  validationEl.textContent = msg;
+}
+
+function hideValidation() {
+  validationEl.classList.remove('visible');
+}
+
+function escapeWifiField(value) {
+  return String(value).replace(/([\\;,":])/g, '\\$1');
+}
+
+function vcardEscape(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+}
+
+function toIcalDateUTC(localDateStr) {
+  // Browser-native datetime-local gives "YYYY-MM-DDTHH:mm"; treat as local time.
+  const d = new Date(localDateStr);
+  if (isNaN(d.getTime())) return null;
+  return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+}
+
+function safeFilename(s) {
+  return String(s).replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80) || 'qrcode';
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   5. Payload builders — one per type
+   ═════════════════════════════════════════════════════════════════ */
+
+const PAYLOAD_BUILDERS = {
+  text() {
+    const v = urlInput.value.trim();
+    if (!v) return { error: 'Please enter a URL or text.' };
+    return { value: v, label: v };
+  },
+
+  wifi() {
+    const ssid = wifiSsidInput.value;
+    if (!ssid) return { error: 'Please enter a network name (SSID).' };
+    const encryption = wifiEncryptionSelect.value;
+    const parts = [`T:${encryption}`, `S:${escapeWifiField(ssid)}`];
+    if (encryption !== 'nopass') parts.push(`P:${escapeWifiField(wifiPasswordInput.value)}`);
+    if (wifiHiddenToggle.checked) parts.push('H:true');
+    return { value: `WIFI:${parts.join(';')};;`, label: `WiFi: ${ssid}` };
+  },
+
+  email() {
+    const to = emailToInput.value.trim();
+    if (!to) return { error: 'Please enter a recipient email address.' };
+    const params = new URLSearchParams();
+    if (emailSubjectInput.value.trim()) params.set('subject', emailSubjectInput.value.trim());
+    if (emailBodyInput.value)           params.set('body',    emailBodyInput.value);
+    const qs = params.toString();
+    return { value: `mailto:${to}${qs ? '?' + qs : ''}`, label: `Email: ${to}` };
+  },
+
+  sms() {
+    const raw = smsNumberInput.value.trim();
+    const cleaned = raw.replace(/[^\d+]/g, '');
+    if (!cleaned) return { error: 'Please enter a phone number.' };
+    const body = smsBodyInput.value;
+    const value = body ? `SMSTO:${cleaned}:${body}` : `sms:${cleaned}`;
+    return { value, label: `SMS: ${cleaned}` };
+  },
+
+  vcard() {
+    const first = vcFirstInput.value.trim();
+    const last  = vcLastInput.value.trim();
+    const org   = vcOrgInput.value.trim();
+    if (!first && !last && !org) return { error: 'Please enter at least a name or organization.' };
+    const fn = [first, last].filter(Boolean).join(' ') || org;
+    const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+    lines.push(`N:${vcardEscape(last)};${vcardEscape(first)};;;`);
+    lines.push(`FN:${vcardEscape(fn)}`);
+    if (org)                 lines.push(`ORG:${vcardEscape(org)}`);
+    if (vcTitleInput.value.trim())  lines.push(`TITLE:${vcardEscape(vcTitleInput.value.trim())}`);
+    if (vcPhoneInput.value.trim())  lines.push(`TEL;TYPE=WORK,VOICE:${vcardEscape(vcPhoneInput.value.trim())}`);
+    if (vcMobileInput.value.trim()) lines.push(`TEL;TYPE=CELL,VOICE:${vcardEscape(vcMobileInput.value.trim())}`);
+    if (vcEmailInput.value.trim())  lines.push(`EMAIL:${vcardEscape(vcEmailInput.value.trim())}`);
+    if (vcUrlInput.value.trim())    lines.push(`URL:${vcardEscape(vcUrlInput.value.trim())}`);
+    lines.push('END:VCARD');
+    return { value: lines.join('\n'), label: `Contact: ${fn}` };
+  },
+
+  event() {
+    const title = evTitleInput.value.trim();
+    if (!title) return { error: 'Please enter an event title.' };
+    if (!evStartInput.value) return { error: 'Please enter a start date and time.' };
+    const start = toIcalDateUTC(evStartInput.value);
+    if (!start) return { error: 'Start date/time is invalid.' };
+    let end = null;
+    if (evEndInput.value) {
+      end = toIcalDateUTC(evEndInput.value);
+      if (!end) return { error: 'End date/time is invalid.' };
+    }
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Red Hat EBC QR//EN', 'BEGIN:VEVENT'];
+    lines.push(`SUMMARY:${vcardEscape(title)}`);
+    lines.push(`DTSTART:${start}`);
+    if (end) lines.push(`DTEND:${end}`);
+    if (evLocationInput.value.trim()) lines.push(`LOCATION:${vcardEscape(evLocationInput.value.trim())}`);
+    if (evDescInput.value.trim())     lines.push(`DESCRIPTION:${vcardEscape(evDescInput.value.trim())}`);
+    lines.push('END:VEVENT', 'END:VCALENDAR');
+    return { value: lines.join('\n'), label: `Event: ${title}` };
+  }
+};
+
+/* ═════════════════════════════════════════════════════════════════
+   6. QR matrix
+   ═════════════════════════════════════════════════════════════════ */
+
+function buildQR(value, errorCorrection) {
+  const qr = qrcode(0, errorCorrection);
+  qr.addData(value);
+  qr.make();
+  return qr;
+}
+
+function buildMatrix(qr) {
+  const n = qr.getModuleCount();
+  const m = [];
+  for (let r = 0; r < n; r++) {
+    const row = [];
+    for (let c = 0; c < n; c++) row.push(qr.isDark(r, c));
+    m.push(row);
+  }
+  return m;
+}
+
+function isFinderModule(row, col, n) {
+  if (row < 7 && col < 7) return true;
+  if (row < 7 && col >= n - 7) return true;
+  if (row >= n - 7 && col < 7) return true;
+  return false;
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   7. Canvas rendering
+   ═════════════════════════════════════════════════════════════════ */
+
+function drawFinder(ctx, x, y, s, color) {
+  const cx = x + 3.5 * s;
+  const cy = y + 3.5 * s;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3.5 * s, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 2.5 * s, 0, Math.PI * 2, true);
+  ctx.fill('evenodd');
+  ctx.beginPath();
+  ctx.arc(cx, cy, 1.5 * s, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawLiquidCell(ctx, modules, r, c, x, y, s) {
+  const n = modules.length;
+  const get = (rr, cc) => rr >= 0 && rr < n && cc >= 0 && cc < n && modules[rr][cc];
+  const north = get(r - 1, c);
+  const south = get(r + 1, c);
+  const east  = get(r, c + 1);
+  const west  = get(r, c - 1);
+  const rad = s / 2;
+  const tl = (north || west) ? 0 : rad;
+  const tr = (north || east) ? 0 : rad;
+  const br = (south || east) ? 0 : rad;
+  const bl = (south || west) ? 0 : rad;
+  ctx.beginPath();
+  ctx.moveTo(x + tl, y);
+  ctx.lineTo(x + s - tr, y);
+  if (tr > 0) ctx.arcTo(x + s, y, x + s, y + tr, tr);
+  ctx.lineTo(x + s, y + s - br);
+  if (br > 0) ctx.arcTo(x + s, y + s, x + s - br, y + s, br);
+  ctx.lineTo(x + bl, y + s);
+  if (bl > 0) ctx.arcTo(x, y + s, x, y + s - bl, bl);
+  ctx.lineTo(x, y + tl);
+  if (tl > 0) ctx.arcTo(x, y, x + tl, y, tl);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function roundedRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function computeLogoPlacement(actualSize, img) {
+  const targetBox = actualSize * LOGO_FRACTION;
+  const ratio = img.naturalWidth / img.naturalHeight;
+  let drawW, drawH;
+  if (ratio >= 1) { drawW = targetBox; drawH = targetBox / ratio; }
+  else            { drawH = targetBox; drawW = targetBox * ratio; }
+  return { drawW, drawH };
+}
+
+function drawLogoOnCanvas(ctx, img, actualSize, cellSize) {
+  const { drawW, drawH } = computeLogoPlacement(actualSize, img);
+  const padding = Math.max(cellSize * 0.6, 6);
+  const bgW = drawW + padding * 2;
+  const bgH = drawH + padding * 2;
+  const bgX = (actualSize - bgW) / 2;
+  const bgY = (actualSize - bgH) / 2;
+  const bgR = Math.min(bgW, bgH) * 0.12;
+  ctx.save();
+  ctx.fillStyle = '#ffffff';
+  roundedRectPath(ctx, bgX, bgY, bgW, bgH, bgR);
+  ctx.fill();
+  ctx.restore();
+  ctx.drawImage(img, (actualSize - drawW) / 2, (actualSize - drawH) / 2, drawW, drawH);
+}
+
+function renderQRToCanvas(canvas, value, opts) {
+  const { targetSize, color, style, withBorder, logoImg } = opts;
+  const useHigh = !!logoImg || style === 'liquid';
+  const qr = buildQR(value, useHigh ? 'H' : 'M');
+  const modules = buildMatrix(qr);
+  const moduleCount = modules.length;
+  const margin = 4;
+  const totalModules = moduleCount + margin * 2;
+  const cellSize = Math.max(2, Math.floor(targetSize / totalModules));
+  const actualSize = cellSize * totalModules;
+
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = actualSize * dpr;
+  canvas.height = actualSize * dpr;
+  canvas.style.width = actualSize + 'px';
+  canvas.style.height = actualSize + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(dpr, dpr);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, actualSize, actualSize);
+
+  ctx.fillStyle = color;
+  const offset = margin * cellSize;
+
+  if (style === 'square') {
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (modules[r][c]) {
+          ctx.fillRect(offset + c * cellSize, offset + r * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+  } else {
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (!modules[r][c]) continue;
+        if (isFinderModule(r, c, moduleCount)) continue;
+        drawLiquidCell(ctx, modules, r, c, offset + c * cellSize, offset + r * cellSize, cellSize);
+      }
+    }
+    drawFinder(ctx, offset, offset, cellSize, color);
+    drawFinder(ctx, offset + (moduleCount - 7) * cellSize, offset, cellSize, color);
+    drawFinder(ctx, offset, offset + (moduleCount - 7) * cellSize, cellSize, color);
+  }
+
+  if (withBorder) {
+    const inset = cellSize * 1.2;
+    const borderThickness = Math.max(2, cellSize * 0.55);
+    const cornerRadius = cellSize * 2.2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = borderThickness;
+    ctx.lineJoin = 'round';
+    roundedRectPath(ctx, inset, inset, actualSize - inset * 2, actualSize - inset * 2, cornerRadius);
+    ctx.stroke();
+  }
+
+  if (logoImg) drawLogoOnCanvas(ctx, logoImg, actualSize, cellSize);
+
+  return { actualSize, cellSize, moduleCount, margin, modules };
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   8. SVG rendering
+   ═════════════════════════════════════════════════════════════════ */
+
+function imageToDataUrlSafe(img) {
+  // Some local-file Image objects taint the canvas; bail with null in that case.
+  try {
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth || 256;
+    c.height = img.naturalHeight || 256;
+    c.getContext('2d').drawImage(img, 0, 0);
+    return c.toDataURL('image/png');
+  } catch {
+    return null;
+  }
+}
+
+function renderQRToSVG(value, opts) {
+  const { targetSize, color, style, withBorder, logoImg, logoDataUrl } = opts;
+  const useHigh = !!logoImg || style === 'liquid';
+  const qr = buildQR(value, useHigh ? 'H' : 'M');
+  const modules = buildMatrix(qr);
+  const moduleCount = modules.length;
+  const margin = 4;
+  const cellSize = 10; // logical units; SVG scales freely
+  const totalModules = moduleCount + margin * 2;
+  const sizeUnits = cellSize * totalModules;
+  const offset = margin * cellSize;
+
+  const xml = [];
+  xml.push(`<?xml version="1.0" encoding="UTF-8"?>`);
+  xml.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sizeUnits} ${sizeUnits}" width="${targetSize}" height="${targetSize}" role="img" aria-label="QR code">`);
+  xml.push(`<rect width="100%" height="100%" fill="#ffffff"/>`);
+
+  if (style === 'square') {
+    const rects = [];
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (modules[r][c]) {
+          rects.push(`M${offset + c * cellSize} ${offset + r * cellSize}h${cellSize}v${cellSize}h-${cellSize}z`);
+        }
+      }
+    }
+    xml.push(`<path fill="${color}" d="${rects.join('')}"/>`);
+  } else {
+    // Liquid cells
+    const paths = [];
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (!modules[r][c]) continue;
+        if (isFinderModule(r, c, moduleCount)) continue;
+        paths.push(liquidCellPath(modules, r, c, offset + c * cellSize, offset + r * cellSize, cellSize));
+      }
+    }
+    xml.push(`<path fill="${color}" d="${paths.join(' ')}"/>`);
+    // Finders as concentric circles
+    const finderCenters = [
+      { x: offset + 3.5 * cellSize, y: offset + 3.5 * cellSize },
+      { x: offset + (moduleCount - 7 + 3.5) * cellSize, y: offset + 3.5 * cellSize },
+      { x: offset + 3.5 * cellSize, y: offset + (moduleCount - 7 + 3.5) * cellSize }
+    ];
+    for (const { x, y } of finderCenters) {
+      xml.push(`<path fill="${color}" fill-rule="evenodd" d="M${x - 3.5 * cellSize} ${y}a${3.5 * cellSize} ${3.5 * cellSize} 0 1 0 ${7 * cellSize} 0a${3.5 * cellSize} ${3.5 * cellSize} 0 1 0 -${7 * cellSize} 0M${x - 2.5 * cellSize} ${y}a${2.5 * cellSize} ${2.5 * cellSize} 0 1 0 ${5 * cellSize} 0a${2.5 * cellSize} ${2.5 * cellSize} 0 1 0 -${5 * cellSize} 0"/>`);
+      xml.push(`<circle fill="${color}" cx="${x}" cy="${y}" r="${1.5 * cellSize}"/>`);
+    }
+  }
+
+  if (withBorder) {
+    const inset = cellSize * 1.2;
+    const borderThickness = Math.max(2, cellSize * 0.55);
+    const cornerRadius = cellSize * 2.2;
+    const bx = inset;
+    const by = inset;
+    const bw = sizeUnits - inset * 2;
+    const bh = sizeUnits - inset * 2;
+    xml.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="${cornerRadius}" ry="${cornerRadius}" fill="none" stroke="${color}" stroke-width="${borderThickness}" stroke-linejoin="round"/>`);
+  }
+
+  if (logoImg) {
+    const { drawW, drawH } = computeLogoPlacement(sizeUnits, logoImg);
+    const padding = Math.max(cellSize * 0.6, 6);
+    const bgW = drawW + padding * 2;
+    const bgH = drawH + padding * 2;
+    const bgX = (sizeUnits - bgW) / 2;
+    const bgY = (sizeUnits - bgH) / 2;
+    const bgR = Math.min(bgW, bgH) * 0.12;
+    xml.push(`<rect x="${bgX}" y="${bgY}" width="${bgW}" height="${bgH}" rx="${bgR}" ry="${bgR}" fill="#ffffff"/>`);
+    const href = logoDataUrl || logoImg.src;
+    xml.push(`<image x="${(sizeUnits - drawW) / 2}" y="${(sizeUnits - drawH) / 2}" width="${drawW}" height="${drawH}" preserveAspectRatio="xMidYMid meet" href="${href}" xlink:href="${href}"/>`);
+  }
+
+  xml.push(`</svg>`);
+  return xml.join('\n');
+}
+
+function liquidCellPath(modules, r, c, x, y, s) {
+  const n = modules.length;
+  const get = (rr, cc) => rr >= 0 && rr < n && cc >= 0 && cc < n && modules[rr][cc];
+  const north = get(r - 1, c), south = get(r + 1, c), east = get(r, c + 1), west = get(r, c - 1);
+  const rad = s / 2;
+  const tl = (north || west) ? 0 : rad;
+  const tr = (north || east) ? 0 : rad;
+  const br = (south || east) ? 0 : rad;
+  const bl = (south || west) ? 0 : rad;
+  const parts = [`M${x + tl} ${y}`];
+  parts.push(`H${x + s - tr}`);
+  if (tr > 0) parts.push(`A${tr} ${tr} 0 0 1 ${x + s} ${y + tr}`);
+  parts.push(`V${y + s - br}`);
+  if (br > 0) parts.push(`A${br} ${br} 0 0 1 ${x + s - br} ${y + s}`);
+  parts.push(`H${x + bl}`);
+  if (bl > 0) parts.push(`A${bl} ${bl} 0 0 1 ${x} ${y + s - bl}`);
+  parts.push(`V${y + tl}`);
+  if (tl > 0) parts.push(`A${tl} ${tl} 0 0 1 ${x + tl} ${y}`);
+  parts.push('Z');
+  return parts.join(' ');
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   9. Logo handling
+   ═════════════════════════════════════════════════════════════════ */
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Could not load image: ${src}`));
+    img.src = src;
+  });
+}
+
+async function setPresetLogo(key) {
+  if (key === 'none') {
+    currentLogo = null;
+    updateLogoPreview();
+    return;
+  }
+  const preset = LOGO_PRESETS[key];
+  if (!preset) return;
+  try {
+    const img = await loadImage(preset.src);
+    const dataUrl = imageToDataUrlSafe(img);
+    currentLogo = { image: img, key, label: preset.label, dataUrl };
+    updateLogoPreview();
+  } catch {
+    showError(`Could not load logo: ${preset.label}. Make sure the file is alongside this page.`);
+    currentLogo = null;
+    updateLogoPreview();
+  }
+}
+
+function updateLogoPreview() {
+  logoPreview.innerHTML = '';
+  if (currentLogo) {
+    logoPreview.classList.remove('empty');
+    const img = document.createElement('img');
+    img.src = currentLogo.image.src;
+    img.alt = currentLogo.label;
+    logoPreview.appendChild(img);
+  } else {
+    logoPreview.classList.add('empty');
+  }
+}
+
+function handleLogoSelectChange() {
+  const v = logoSelect.value;
+  fileInputWrap.classList.toggle('visible', v === 'custom');
+  if (v === 'custom') {
+    updateProfileChipsUI();
+    return;
+  }
+  setPresetLogo(v).then(() => {
+    updateProfileChipsUI();
+    if (currentValue && mode === 'single') generate();
+  });
+}
+
+function handleFileUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (file.size > MAX_LOGO_BYTES) {
+    showError('Logo file is too large. Maximum size is 2 MB.');
+    logoUpload.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const dataUrl = reader.result;
+      const img = await loadImage(dataUrl);
+      currentLogo = { image: img, key: 'custom', label: file.name, dataUrl };
+      fileNameEl.textContent = file.name;
+      updateLogoPreview();
+      updateProfileChipsUI();
+      clearError();
+      if (currentValue && mode === 'single') generate();
+    } catch {
+      showError('Could not read uploaded image.');
+    }
+  };
+  reader.onerror = () => showError('Could not read uploaded image.');
+  reader.readAsDataURL(file);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   9b. Brand profiles (logo + color presets)
+   ═════════════════════════════════════════════════════════════════ */
+
+async function applyProfile(key) {
+  const profile = PROFILES[key];
+  if (!profile) return;
+  logoSelect.value = profile.logo;
+  fileInputWrap.classList.remove('visible');
+  colorInput.value = profile.color;
+  await setPresetLogo(profile.logo);
+  updateProfileChipsUI();
+  hideSuggestion();
+  if (currentValue && mode === 'single') generate();
+}
+
+function inferProfileFromState() {
+  const logo = logoSelect.value;
+  const color = (colorInput.value || '').toLowerCase();
+  for (const [key, profile] of Object.entries(PROFILES)) {
+    if (logo === profile.logo && color === profile.color.toLowerCase()) return key;
+  }
+  return null;
+}
+
+function updateProfileChipsUI() {
+  const active = inferProfileFromState();
+  profileChips.forEach(chip => {
+    const isActive = chip.dataset.profile === active;
+    chip.classList.toggle('active', isActive);
+    chip.setAttribute('aria-checked', String(isActive));
+  });
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   10. Auto-suggest (URL → preset logo)
+   ═════════════════════════════════════════════════════════════════ */
+
+function detectSuggestion(value) {
+  const v = (value || '').toLowerCase();
+  for (const rule of SUGGESTION_RULES) {
+    if (rule.keys.some(k => v.includes(k))) return rule;
+  }
+  return null;
+}
+
+function maybeShowSuggestion() {
+  if (mode !== 'single' || type !== 'text') return hideSuggestion();
+  const value = urlInput.value.trim();
+  if (!value || value === suggestionDismissedForValue) return hideSuggestion();
+  const match = detectSuggestion(value);
+  if (!match) return hideSuggestion();
+  if (logoSelect.value === match.preset) return hideSuggestion();
+  pendingSuggestionPreset = match.preset;
+  suggestionTextEl.innerHTML = `This looks like a <strong>${match.label}</strong> link &mdash; add the matching logo?`;
+  suggestionEl.classList.add('visible');
+}
+
+function hideSuggestion() {
+  suggestionEl.classList.remove('visible');
+  pendingSuggestionPreset = null;
+}
+
+async function acceptSuggestion() {
+  if (!pendingSuggestionPreset) return hideSuggestion();
+  logoSelect.value = pendingSuggestionPreset;
+  fileInputWrap.classList.remove('visible');
+  await setPresetLogo(pendingSuggestionPreset);
+  hideSuggestion();
+  if (currentValue) generate();
+  else if (urlInput.value.trim()) generate();
+}
+
+function dismissSuggestion() {
+  suggestionDismissedForValue = urlInput.value.trim();
+  hideSuggestion();
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   11. Scan validation (jsQR)
+   ═════════════════════════════════════════════════════════════════ */
+
+function validateScan(canvas, expectedValue) {
+  if (typeof jsQR !== 'function') return null;
+  try {
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const result = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
+    if (!result) return { ok: false, reason: 'no-decode' };
+    if (result.data === expectedValue) return { ok: true };
+    return { ok: false, reason: 'mismatch', got: result.data };
+  } catch {
+    return null;  // tainted canvas — validation skipped
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   12. Single generation
+   ═════════════════════════════════════════════════════════════════ */
+
+function getRenderOpts() {
+  return {
+    targetSize: parseInt(sizeSelect.value, 10),
+    color:      colorInput.value,
+    style:      styleSelect.value,
+    withBorder: borderToggle.checked,
+    logoImg:    currentLogo ? currentLogo.image : null,
+    logoDataUrl: currentLogo ? currentLogo.dataUrl : null
+  };
+}
+
+function generate() {
+  const builder = PAYLOAD_BUILDERS[type];
+  const result = builder();
+  if (result.error) {
+    showError(result.error);
+    return;
+  }
+  clearError();
+  try {
+    renderQRToCanvas(qrCanvas, result.value, getRenderOpts());
+    currentValue = result.value;
+    qrUrlEl.textContent = result.label;
+    qrDisplay.classList.add('visible');
+    emptyState.style.display = 'none';
+
+    const v = validateScan(qrCanvas, result.value);
+    if (v === null) {
+      hideValidation();
+    } else if (v.ok) {
+      showValidation('ok', '✓ Verified scannable');
+    } else if (v.reason === 'no-decode') {
+      showValidation('warn', '⚠ Could not decode the generated image. Try smaller logo, simpler content, or higher size.');
+    } else {
+      showValidation('warn', '⚠ Decoded content differs from input — please regenerate.');
+    }
+  } catch (err) {
+    showError('Could not generate QR code. Text may be too long.');
+    console.error(err);
+  }
+}
+
+function downloadPNG() {
+  if (!currentValue) return;
+  const link = document.createElement('a');
+  const suffix = currentLogo ? `-${currentLogo.key}` : '';
+  link.download = `qrcode${suffix}.png`;
+  link.href = qrCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function downloadSVG() {
+  if (!currentValue) return;
+  const svg = renderQRToSVG(currentValue, getRenderOpts());
+  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const suffix = currentLogo ? `-${currentLogo.key}` : '';
+  link.download = `qrcode${suffix}.svg`;
+  link.href = url;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function copyImage() {
+  if (!currentValue) return;
+  try {
+    const blob = await new Promise(resolve => qrCanvas.toBlob(resolve, 'image/png'));
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      copyBtn.textContent = 'Copied!';
+    } else {
+      copyBtn.textContent = 'Not supported';
+    }
+  } catch {
+    copyBtn.textContent = 'Copy failed';
+  }
+  setTimeout(() => { copyBtn.textContent = 'Copy image'; }, 1500);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   13. Batch generation
+   ═════════════════════════════════════════════════════════════════ */
+
+function parseCSV(text) {
+  // Minimal CSV parser: handles quoted fields, commas, CRLF; no escape-doubling complexity.
+  const rows = [];
+  let i = 0, field = '', row = [], inQ = false;
+  while (i < text.length) {
+    const ch = text[i];
+    if (inQ) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += ch; i++; continue;
+    }
+    if (ch === '"') { inQ = true; i++; continue; }
+    if (ch === ',') { row.push(field); field = ''; i++; continue; }
+    if (ch === '\r') { i++; continue; }
+    if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+    field += ch; i++;
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(c => c && c.trim()));
+}
+
+function getBatchItems() {
+  const source = batchSourceSelect.value;
+  if (source === 'paste') {
+    const lines = batchTextarea.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    return lines.map((url, idx) => ({
+      name: safeFilename(deriveNameFromUrl(url, idx)),
+      value: url
+    }));
+  }
+  // CSV
+  if (!batchCsvText) return [];
+  const rows = parseCSV(batchCsvText);
+  if (!rows.length) return [];
+  // If first row looks like a header (contains "url" / "filename"), skip it
+  const first = rows[0].map(c => c.toLowerCase().trim());
+  const hasHeader = first.some(c => c === 'url' || c === 'filename' || c === 'name');
+  const dataRows = hasHeader ? rows.slice(1) : rows;
+  return dataRows.map((cols, idx) => {
+    const name = (cols[0] || `qr-${idx + 1}`).trim();
+    const value = (cols[1] || cols[0] || '').trim();
+    return { name: safeFilename(name), value };
+  }).filter(it => it.value);
+}
+
+function deriveNameFromUrl(url, idx) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, '');
+    const path = u.pathname.replace(/\/$/, '').split('/').filter(Boolean).slice(-1)[0] || '';
+    return path ? `${host}-${path}` : host;
+  } catch {
+    return `qr-${idx + 1}`;
+  }
+}
+
+function updateBatchProgress(done, total) {
+  batchProgress.classList.toggle('visible', total > 0);
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  batchProgressFill.style.width = pct + '%';
+  batchProgressText.textContent = `${done} / ${total}`;
+}
+
+async function generateBatch() {
+  clearError();
+  const items = getBatchItems();
+  if (!items.length) {
+    showError('Add at least one URL to generate.');
+    return;
+  }
+  if (items.length > BATCH_MAX_ITEMS) {
+    showError(`Too many items: ${items.length}. Maximum is ${BATCH_MAX_ITEMS} per batch.`);
+    return;
+  }
+  if (typeof JSZip !== 'function') {
+    showError('ZIP library failed to load. Check your network connection and reload.');
+    return;
+  }
+  const format = batchFormat.value;
+  const opts = getRenderOpts();
+  const zip = new JSZip();
+  const offscreen = document.createElement('canvas');
+
+  generateBtn.disabled = true;
+  generateBtn.setAttribute('aria-busy', 'true');
+  updateBatchProgress(0, items.length);
+
+  try {
+    for (let i = 0; i < items.length; i++) {
+      const { name, value } = items[i];
+      if (format === 'png' || format === 'both') {
+        renderQRToCanvas(offscreen, value, opts);
+        const blob = await new Promise(r => offscreen.toBlob(r, 'image/png'));
+        zip.file(`${name}.png`, blob);
+      }
+      if (format === 'svg' || format === 'both') {
+        const svg = renderQRToSVG(value, opts);
+        zip.file(`${name}.svg`, svg);
+      }
+      updateBatchProgress(i + 1, items.length);
+      // Yield to the UI thread every few items so the progress bar updates.
+      if (i % 4 === 3) await new Promise(r => setTimeout(r, 0));
+    }
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const link = document.createElement('a');
+    link.download = `qrcodes-${new Date().toISOString().slice(0, 10)}.zip`;
+    link.href = url;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (err) {
+    console.error(err);
+    showError('Batch generation failed: ' + (err.message || 'unknown error'));
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.removeAttribute('aria-busy');
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   14. UI: mode + type switching
+   ═════════════════════════════════════════════════════════════════ */
+
+function setMode(next) {
+  mode = next;
+  const isBatch = next === 'batch';
+  modeTabSingle.classList.toggle('active', !isBatch);
+  modeTabBatch.classList.toggle('active', isBatch);
+  modeTabSingle.setAttribute('aria-selected', String(!isBatch));
+  modeTabBatch.setAttribute('aria-selected', String(isBatch));
+  modePanelSingle.classList.toggle('active', !isBatch);
+  modePanelBatch.classList.toggle('active', isBatch);
+  modePanelSingle.hidden = isBatch;
+  modePanelBatch.hidden = !isBatch;
+  generateBtn.textContent = isBatch ? 'Generate ZIP' : 'Generate QR code';
+  clearError();
+  hideSuggestion();
+  // Hide single-mode output when switching to batch
+  if (isBatch) {
+    qrDisplay.classList.remove('visible');
+    emptyState.style.display = '';
+    hideValidation();
+  }
+}
+
+function setType(next) {
+  type = next;
+  for (const [key, panel] of Object.entries(typePanels)) {
+    panel.classList.toggle('active', key === next);
+  }
+  clearError();
+  hideSuggestion();
+  // Move focus to first field in the new panel for screen readers / keyboard users
+  const firstInput = typePanels[next].querySelector('input, textarea');
+  if (firstInput && document.activeElement === typeSelect) {
+    // user changed via the select — move to the field
+    setTimeout(() => firstInput.focus(), 0);
+  }
+  if (currentValue) generate();
+}
+
+function setBatchSource(next) {
+  batchPasteWrap.hidden = next !== 'paste';
+  batchCsvWrap.hidden   = next !== 'csv';
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   15. Event bindings
+   ═════════════════════════════════════════════════════════════════ */
+
+generateBtn.addEventListener('click', () => (mode === 'batch' ? generateBatch() : generate()));
+downloadBtn.addEventListener('click', downloadPNG);
+downloadSvgBtn.addEventListener('click', downloadSVG);
+copyBtn.addEventListener('click', copyImage);
+
+modeTabSingle.addEventListener('click', () => setMode('single'));
+modeTabBatch.addEventListener('click', () => setMode('batch'));
+typeSelect.addEventListener('change', () => setType(typeSelect.value));
+
+wifiPasswordToggle.addEventListener('click', () => {
+  const showing = wifiPasswordInput.type === 'text';
+  wifiPasswordInput.type = showing ? 'password' : 'text';
+  wifiPasswordToggle.textContent = showing ? 'Show' : 'Hide';
+  wifiPasswordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+});
+
+logoSelect.addEventListener('change', handleLogoSelectChange);
+logoUpload.addEventListener('change', handleFileUpload);
+suggestionAcceptBtn.addEventListener('click', acceptSuggestion);
+suggestionDismissBtn.addEventListener('click', dismissSuggestion);
+
+// Brand profile chips
+profileChips.forEach(chip => {
+  chip.addEventListener('click', () => applyProfile(chip.dataset.profile));
+});
+colorInput.addEventListener('input', updateProfileChipsUI);
+
+batchSourceSelect.addEventListener('change', () => setBatchSource(batchSourceSelect.value));
+batchCsvInput.addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  batchCsvName.textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = () => { batchCsvText = reader.result; };
+  reader.onerror = () => showError('Could not read CSV file.');
+  reader.readAsText(file);
+});
+
+// Submit on Enter for single-line fields
+const enterToGenerate = [urlInput, wifiSsidInput, wifiPasswordInput, emailToInput, emailSubjectInput,
+  smsNumberInput, vcFirstInput, vcLastInput, vcOrgInput, vcTitleInput, vcPhoneInput, vcMobileInput,
+  vcEmailInput, vcUrlInput, evTitleInput, evLocationInput];
+enterToGenerate.forEach(el => {
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && mode === 'single') { e.preventDefault(); generate(); }
+  });
+});
+
+// Clear error on any input change
+document.querySelectorAll('#mode-panel-single input, #mode-panel-single textarea')
+  .forEach(el => el.addEventListener('input', () => {
+    if (errorMsg.classList.contains('visible')) clearError();
+  }));
+
+// URL field — suggestion logic
+urlInput.addEventListener('input', () => {
+  if (urlInput.value.trim() !== suggestionDismissedForValue) suggestionDismissedForValue = '';
+  maybeShowSuggestion();
+});
+
+// Live update after first generation
+const liveUpdateInputs = [
+  urlInput, wifiSsidInput, wifiPasswordInput, wifiEncryptionSelect, wifiHiddenToggle,
+  emailToInput, emailSubjectInput, emailBodyInput,
+  smsNumberInput, smsBodyInput,
+  vcFirstInput, vcLastInput, vcOrgInput, vcTitleInput, vcPhoneInput, vcMobileInput, vcEmailInput, vcUrlInput,
+  evTitleInput, evStartInput, evEndInput, evLocationInput, evDescInput,
+  styleSelect, sizeSelect, borderToggle, colorInput
+];
+liveUpdateInputs.forEach(el => {
+  const event = (el.type === 'checkbox' || el.tagName === 'SELECT' || el.type === 'datetime-local') ? 'change' : 'input';
+  el.addEventListener(event, () => { if (currentValue && mode === 'single') generate(); });
+});
+
+// Keyboard navigation between tabs
+[modeTabSingle, modeTabBatch].forEach((tab, idx, arr) => {
+  tab.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const dir = e.key === 'ArrowRight' ? 1 : -1;
+      const next = arr[(idx + dir + arr.length) % arr.length];
+      next.focus();
+      next.click();
+    }
+  });
+});
+
+// Initial chip state reflects the default settings (logo: none, color: #151515)
+updateProfileChipsUI();
+</script>
+
+</body>
+</html>
