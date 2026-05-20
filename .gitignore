@@ -13,3 +13,6 @@ ehthumbs.db
 
 # Logs
 *.log
+
+# Claude Code working files
+.claude/

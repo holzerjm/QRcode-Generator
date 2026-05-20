@@ -483,6 +483,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   border-color: #B89400;
   box-shadow: inset 0 0 0 1px #B89400;
 }
+.profile-chip.active[data-profile="customer-marketing"] {
+  border-color: var(--rh-red);
+  box-shadow: inset 0 0 0 1px var(--rh-red);
+}
 .profile-swatch {
   width: 18px;
   height: 18px;
@@ -1134,8 +1138,8 @@ footer .copyright {
 
 <main id="main" class="container">
   <img src="qrious_george_banner.png" alt="QRious George &mdash; Your Curious QR Code Generator" class="banner">
-  <h1>QRious George</h1>
-  <p class="subtitle">Create branded, scannable codes &mdash; URLs, WiFi, Email, SMS, Contacts, Calendar events, or batches &mdash; with optional Red Hat, EBC, or custom logo.</p>
+  <h1>Your versatile QR generator</h1>
+  <p class="subtitle">Create branded, scannable codes &mdash; URLs, WiFi, Email, SMS, Contacts, Calendar events, or batches &mdash; with optional Red Hat, EBC, Customer Marketing, or custom logo.</p>
 
   <div class="card">
     <!-- Mode tabs: Single vs Batch -->
@@ -1146,7 +1150,7 @@ footer .copyright {
 
     <div class="section-title section-title-flush">Brand profile</div>
     <div class="profile-chips" role="radiogroup" aria-label="Brand profile">
-      <button class="profile-chip active" type="button" data-profile="none" role="radio" aria-checked="true">
+      <button class="profile-chip" type="button" data-profile="none" role="radio" aria-checked="false">
         <span class="profile-swatch" style="background:#151515;"></span>
         <span>None</span>
       </button>
@@ -1688,6 +1692,7 @@ let mode = 'single';                  // 'single' | 'batch'
 let type = 'text';                    // text | wifi | email | sms | vcard | event
 let currentValue = '';
 let currentLogo = null;               // { image, key, label, dataUrl? }
+let currentActiveProfile = null;      // built-in profile key, custom profile id, or null
 let pendingSuggestionPreset = null;
 let suggestionDismissedForValue = '';
 let batchCsvText = null;
@@ -2208,31 +2213,38 @@ async function applyProfile(key) {
   fileInputWrap.classList.remove('visible');
   colorInput.value = profile.color;
   await setPresetLogo(profile.logo);
+  currentActiveProfile = key;
   updateProfileChipsUI();
   hideSuggestion();
   if (currentValue && mode === 'single') generate();
 }
 
-function inferProfileFromState() {
-  const logo = logoSelect.value;
+// Does the current logo + color state still match this profile?
+function profileStateMatches(profileKey) {
+  if (!profileKey) return false;
+  const builtin = PROFILES[profileKey];
   const color = (colorInput.value || '').toLowerCase();
-  for (const [key, profile] of Object.entries(PROFILES)) {
-    if (logo === profile.logo && color === profile.color.toLowerCase()) return key;
+  if (builtin) {
+    return logoSelect.value === builtin.logo && color === builtin.color.toLowerCase();
   }
-  const customs = loadCustomProfiles();
-  for (const p of customs) {
-    if (p.color.toLowerCase() !== color) continue;
-    if (p.logo.type === 'preset' && p.logo.key === logo) return p.id;
-    if (p.logo.type === 'custom' && logo === 'custom' && currentLogo && currentLogo.dataUrl === p.logo.dataUrl) return p.id;
+  const custom = loadCustomProfiles().find(p => p.id === profileKey);
+  if (!custom) return false;
+  if (custom.color.toLowerCase() !== color) return false;
+  if (custom.logo.type === 'preset') return custom.logo.key === logoSelect.value;
+  if (custom.logo.type === 'custom') {
+    return logoSelect.value === 'custom' && !!currentLogo && currentLogo.dataUrl === custom.logo.dataUrl;
   }
-  return null;
+  return false;
 }
 
 function updateProfileChipsUI() {
-  const active = inferProfileFromState();
+  // If the user diverged from the explicitly-applied profile, clear it.
+  if (currentActiveProfile && !profileStateMatches(currentActiveProfile)) {
+    currentActiveProfile = null;
+  }
   document.querySelectorAll('.profile-chip:not(.add-chip)').forEach(chip => {
-    const isActive = (chip.dataset.profile && chip.dataset.profile === active) ||
-                     (chip.dataset.profileId && chip.dataset.profileId === active);
+    const chipKey = chip.dataset.profile || chip.dataset.profileId;
+    const isActive = !!currentActiveProfile && chipKey === currentActiveProfile;
     chip.classList.toggle('active', isActive);
     chip.setAttribute('aria-checked', String(isActive));
   });
@@ -2303,6 +2315,7 @@ async function applyCustomProfile(profile) {
     await setPresetLogo(profile.logo.key);
   }
   colorInput.value = profile.color;
+  currentActiveProfile = profile.id;
   updateProfileChipsUI();
   hideSuggestion();
   if (currentValue && mode === 'single') generate();

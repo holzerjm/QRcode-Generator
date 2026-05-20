@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing pending._
 
+## [1.5.1] - 2026-05-20
+
+### Fixed
+
+- **Brand profile chips stuck "active"**: switching between profiles no longer leaves the previous chip highlighted, and the first-load view no longer shows every chip as selected. Root cause was a falsy expression evaluating to `undefined` rather than `false` and reaching `classList.toggle('active', undefined)`, which falls back to *toggle* mode instead of forcing on/off.
+- Profile selection is now driven by explicit user action via a new `currentActiveProfile` variable, replacing inferred state matching. On first load no chip is highlighted; clicking a chip activates it; manually changing logo or color (in a way that diverges from the selected profile) auto-deactivates it.
+- Added an active-state CSS rule for the Customer Marketing chip so its frame matches the brand red, like the EBC chip.
+- Subtitle typo fix: "Cusomer" → "Customer".
+
+### Changed
+
+- App H1 changed to "Your versatile QR generator" (per local edit incorporated).
+
 ## [1.5.0] - 2026-05-20
 
 ### Added
@@ -84,7 +97,8 @@ _Nothing pending._
 - Companion user guide in Markdown and Red Hat-branded HTML.
 
 [Unreleased]: https://github.com/holzerjm/QRcode-Generator/compare/main...HEAD
-[1.5.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.5.1]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.5.0]: https://github.com/holzerjm/QRcode-Generator/commit/7a31ad7
 [1.4.0]: https://github.com/holzerjm/QRcode-Generator/commit/56bedbb
 [1.3.0]: https://github.com/holzerjm/QRcode-Generator/commit/9e6b8bd
 [1.2.0]: https://github.com/holzerjm/QRcode-Generator/commit/3b3f792
