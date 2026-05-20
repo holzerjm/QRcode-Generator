@@ -1,4 +1,4 @@
-# Red Hat EBC QR Code Generator — User Guide
+# QRious George — User Guide
 
 A web-based tool for creating branded QR codes for URLs, WiFi networks, email, SMS, contact cards, calendar events, and bulk batches. Built for the Red Hat Executive Briefing Center team.
 

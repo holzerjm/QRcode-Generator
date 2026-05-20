@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing pending._
 
+## [1.4.0] - 2026-05-20
+
+### Changed
+
+- **Tool renamed to QRious George.** The browser title, topbar brand text, in-app heading, user guide title, and README heading now reflect the new name. The GitHub repository slug (`QRcode-Generator`) is unchanged.
+- **Brand profile chips are now sized to their content** (`flex: 0 0 auto` instead of `flex: 1`) so they no longer stretch to fill their row. This stops the Customer Marketing chip from ballooning when it wraps to its own row.
+- The Customer Marketing chip label is rendered on two lines (`Customer<br>Marketing`) so its footprint is similar to the other built-in chips.
+
 ## [1.3.0] - 2026-05-20
 
 ### Added
@@ -65,7 +73,8 @@ _Nothing pending._
 - Companion user guide in Markdown and Red Hat-branded HTML.
 
 [Unreleased]: https://github.com/holzerjm/QRcode-Generator/compare/main...HEAD
-[1.3.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.4.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.3.0]: https://github.com/holzerjm/QRcode-Generator/commit/9e6b8bd
 [1.2.0]: https://github.com/holzerjm/QRcode-Generator/commit/3b3f792
 [1.1.0]: https://github.com/holzerjm/QRcode-Generator/commit/6040ad6
 [1.0.0]: https://github.com/holzerjm/QRcode-Generator/commit/da69a53

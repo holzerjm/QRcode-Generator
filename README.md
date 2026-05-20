@@ -1,6 +1,8 @@
-# QRcode-Generator
+# QRious George
 
-A web-based, branded QR code generator built for the Red Hat Executive Briefing Center team. Creates QR codes for URLs, WiFi networks, email, SMS, vCards, calendar events, and bulk batches — with optional Red Hat / EBC / The Open Accelerator / custom logo embedding.
+A web-based, branded QR code generator built for the Red Hat Executive Briefing Center team. Creates QR codes for URLs, WiFi networks, email, SMS, vCards, calendar events, and bulk batches — with optional Red Hat / EBC / The Open Accelerator / Customer Marketing / custom logo embedding.
+
+> The GitHub repository is named [`QRcode-Generator`](https://github.com/holzerjm/QRcode-Generator); the tool itself is **QRious George**.
 
 The entire app is a single static HTML file with no build step.
 
