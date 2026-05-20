@@ -14,10 +14,10 @@ The entire app is a single static HTML file with no build step.
 - **Filename templates** — tokens `{name}` `{date}` `{host}` `{slug}` `{index}` for batch output
 
 **Branding**
-- **Brand profiles** — one-click presets for *Red Hat EBC*, *The Open Accelerator*, and *Red Hat Customer Marketing*
+- **Brand profiles** — one-click presets for *Red Hat EBC*, *The Open Accelerator*, *Red Hat Customer Marketing*, and *Red Hat Innovators in the Open*
 - **Saved custom profiles** — name, save, rename, reorder, and delete your own logo + color combinations (persisted in `localStorage`)
 - **Profile export / import** — round-trip profiles as JSON for sharing across machines or teammates
-- **Logo embedding** — preset logos for Red Hat, EBC, TOA, and Customer Marketing (plus reverse variants), or upload your own (PNG / JPG / SVG / WebP up to 2 MB)
+- **Logo embedding** — preset logos for Red Hat, EBC, TOA, Customer Marketing, and Innovators in the Open (plus reverse variants), or upload your own (PNG / JPG / SVG / WebP up to 2 MB)
 - **Drag-and-drop logo** — drop an image file directly on the card to set it as the logo
 - **URL auto-suggestion** — paste a `redhat.com` or `openaccelerator` URL and the matching logo is offered
 - **Brand color swatches** — Red Hat (4) and TOA (9) brand-safe color presets alongside a freeform picker
@@ -79,6 +79,8 @@ Release history is in [`CHANGELOG.md`](CHANGELOG.md).
 | `Logo-OpenAccelerator-A-Reverse-RGB.png` | The Open Accelerator reverse logo |
 | `Logo-Red_Hat-Customer_Marketing_Team-A-Standard-RGB_Small_logo_transparent.png` | Red Hat Customer Marketing logo |
 | `Logo-Red_Hat-Customer_Marketing_Team-A-Reverse-RGB_Small_logo_transparent.png` | Red Hat Customer Marketing reverse logo |
+| `Logo-Red_Hat-Innovators_in_the_Open-A-Standard-RGB_Medium_logo_transparent.png` | Red Hat Innovators in the Open logo |
+| `Logo-Red_Hat-Innovators_in_the_Open-A-Reverse-RGB_Medium_logo_transparent.png` | Red Hat Innovators in the Open reverse logo |
 
 ## Dependencies
 

@@ -52,6 +52,7 @@ The fastest way to create a branded QR code:
    - **Red Hat EBC** — applies the Red Hat EBC logo with Red Hat red (`#EE0000`).
    - **The Open Accelerator** — applies the TOA logo with TOA yellow (`#FFC600`).
    - **Customer Marketing** — applies the Red Hat Customer Marketing logo with Red Hat red (`#EE0000`).
+   - **Innovators in the Open** — applies the Red Hat Innovators in the Open logo with Red Hat red (`#EE0000`).
 2. Enter your URL in the **URL or text** field.
 3. Click **Generate QR code**.
 
@@ -165,6 +166,8 @@ Available from the **Logo** dropdown:
 - **The Open Accelerator (reverse)** — light version for dark backgrounds.
 - **Red Hat Customer Marketing** — the Customer Marketing team logo (color).
 - **Red Hat Customer Marketing (reverse)** — light version for dark backgrounds.
+- **Red Hat Innovators in the Open** — Red Hat fedora + "Red Hat Innovators in the Open" wordmark.
+- **Red Hat Innovators in the Open (reverse)** — light version for dark backgrounds.
 
 ### Custom upload
 
@@ -423,6 +426,8 @@ If the entry used an uploaded custom logo, the image data is stored alongside th
 | `Logo-OpenAccelerator-A-Reverse-RGB.png` | The Open Accelerator reverse logo |
 | `Logo-Red_Hat-Customer_Marketing_Team-A-Standard-RGB_Small_logo_transparent.png` | Red Hat Customer Marketing logo |
 | `Logo-Red_Hat-Customer_Marketing_Team-A-Reverse-RGB_Small_logo_transparent.png` | Red Hat Customer Marketing reverse logo |
+| `Logo-Red_Hat-Innovators_in_the_Open-A-Standard-RGB_Medium_logo_transparent.png` | Red Hat Innovators in the Open logo |
+| `Logo-Red_Hat-Innovators_in_the_Open-A-Reverse-RGB_Medium_logo_transparent.png` | Red Hat Innovators in the Open reverse logo |
 
 ### Distribution
 

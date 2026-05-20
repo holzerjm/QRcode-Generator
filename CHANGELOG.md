@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing pending._
 
+## [1.6.0] - 2026-05-20
+
+### Added
+
+- **Red Hat Innovators in the Open brand profile** — fifth built-in chip applying the Innovators in the Open logo with Red Hat red (`#EE0000`).
+- Two new preset logos in the Logo dropdown: **Red Hat Innovators in the Open** and **Red Hat Innovators in the Open (reverse)**.
+- URL auto-suggestion now recognizes `innovators-in-the-open`, `innovatorsintheopen`, `/innovators/`, and `iito` keywords.
+
 ## [1.5.1] - 2026-05-20
 
 ### Fixed
@@ -97,7 +105,8 @@ _Nothing pending._
 - Companion user guide in Markdown and Red Hat-branded HTML.
 
 [Unreleased]: https://github.com/holzerjm/QRcode-Generator/compare/main...HEAD
-[1.5.1]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.6.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.5.1]: https://github.com/holzerjm/QRcode-Generator/commit/8e4bce2
 [1.5.0]: https://github.com/holzerjm/QRcode-Generator/commit/7a31ad7
 [1.4.0]: https://github.com/holzerjm/QRcode-Generator/commit/56bedbb
 [1.3.0]: https://github.com/holzerjm/QRcode-Generator/commit/9e6b8bd

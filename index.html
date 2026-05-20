@@ -487,6 +487,10 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   border-color: var(--rh-red);
   box-shadow: inset 0 0 0 1px var(--rh-red);
 }
+.profile-chip.active[data-profile="innovators-in-the-open"] {
+  border-color: var(--rh-red);
+  box-shadow: inset 0 0 0 1px var(--rh-red);
+}
 .profile-swatch {
   width: 18px;
   height: 18px;
@@ -1166,6 +1170,10 @@ footer .copyright {
         <span class="profile-swatch" style="background:#EE0000;"></span>
         <span style="line-height:1.15;">Customer<br>Marketing</span>
       </button>
+      <button class="profile-chip" type="button" data-profile="innovators-in-the-open" role="radio" aria-checked="false">
+        <span class="profile-swatch" style="background:#EE0000;"></span>
+        <span style="line-height:1.15;">Innovators<br>in the Open</span>
+      </button>
       <button class="profile-chip add-chip" type="button" id="save-profile-btn" aria-label="Save current settings as a new profile">
         <span class="plus" aria-hidden="true">+</span>
         <span>Save as&hellip;</span>
@@ -1404,6 +1412,8 @@ footer .copyright {
           <option value="toa-reverse">The Open Accelerator (reverse)</option>
           <option value="customer-marketing">Red Hat Customer Marketing</option>
           <option value="customer-marketing-reverse">Red Hat Customer Marketing (reverse)</option>
+          <option value="innovators-in-the-open">Red Hat Innovators in the Open</option>
+          <option value="innovators-in-the-open-reverse">Red Hat Innovators in the Open (reverse)</option>
           <option value="custom">Upload custom&hellip;</option>
         </select>
         <div class="logo-preview empty" id="logo-preview" aria-hidden="true"></div>
@@ -1546,21 +1556,25 @@ const LOGO_PRESETS = {
   toa:              { src: 'Logo-OpenAccelerator-A-Standard-RGB.png',                             label: 'The Open Accelerator' },
   'toa-reverse':    { src: 'Logo-OpenAccelerator-A-Reverse-RGB.png',                              label: 'The Open Accelerator (reverse)' },
   'customer-marketing':         { src: 'Logo-Red_Hat-Customer_Marketing_Team-A-Standard-RGB_Small_logo_transparent.png', label: 'Red Hat Customer Marketing' },
-  'customer-marketing-reverse': { src: 'Logo-Red_Hat-Customer_Marketing_Team-A-Reverse-RGB_Small_logo_transparent.png',  label: 'Red Hat Customer Marketing (reverse)' }
+  'customer-marketing-reverse': { src: 'Logo-Red_Hat-Customer_Marketing_Team-A-Reverse-RGB_Small_logo_transparent.png',  label: 'Red Hat Customer Marketing (reverse)' },
+  'innovators-in-the-open':         { src: 'Logo-Red_Hat-Innovators_in_the_Open-A-Standard-RGB_Medium_logo_transparent.png', label: 'Red Hat Innovators in the Open' },
+  'innovators-in-the-open-reverse': { src: 'Logo-Red_Hat-Innovators_in_the_Open-A-Reverse-RGB_Medium_logo_transparent.png',  label: 'Red Hat Innovators in the Open (reverse)' }
 };
 
 const SUGGESTION_RULES = [
   { keys: ['ebc.redhat.com', 'executive-briefing', 'execbriefing', 'briefing.redhat'], preset: 'ebc',                label: 'Red Hat EBC' },
   { keys: ['openaccelerator', 'theopenaccelerator', '/toa/', 'toa.redhat'],            preset: 'toa',                label: 'The Open Accelerator' },
-  { keys: ['customer-marketing', 'customermarketing', '/customer-marketing/'],         preset: 'customer-marketing', label: 'Red Hat Customer Marketing' },
-  { keys: ['redhat.com', 'redhat.dev', 'red-hat', 'redhat'],                            preset: 'redhat',             label: 'Red Hat' }
+  { keys: ['customer-marketing', 'customermarketing', '/customer-marketing/'],         preset: 'customer-marketing',     label: 'Red Hat Customer Marketing' },
+  { keys: ['innovators-in-the-open', 'innovatorsintheopen', '/innovators/', 'iito'],   preset: 'innovators-in-the-open', label: 'Red Hat Innovators in the Open' },
+  { keys: ['redhat.com', 'redhat.dev', 'red-hat', 'redhat'],                            preset: 'redhat',                 label: 'Red Hat' }
 ];
 
 const PROFILES = {
   none: { logo: 'none', color: '#151515', label: 'None' },
   ebc:  { logo: 'ebc',  color: '#EE0000', label: 'Red Hat EBC' },
   toa:  { logo: 'toa',  color: '#FFC600', label: 'The Open Accelerator' },
-  'customer-marketing': { logo: 'customer-marketing', color: '#EE0000', label: 'Red Hat Customer Marketing' }
+  'customer-marketing': { logo: 'customer-marketing', color: '#EE0000', label: 'Red Hat Customer Marketing' },
+  'innovators-in-the-open': { logo: 'innovators-in-the-open', color: '#EE0000', label: 'Red Hat Innovators in the Open' }
 };
 
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
