@@ -415,6 +415,7 @@ If the entry used an uploaded custom logo, the image data is stored alongside th
 | `README.md` | Project overview |
 | `CHANGELOG.md` | Release history |
 | `LICENSE` | MIT license for the source code |
+| `qrious_george_banner.png` | Page banner shown at the top of the app and user guide |
 | `Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png` | Red Hat EBC team logo |
 | `Logo-Red_Hat-A-RGB.Small-logo-transparent.png` | Red Hat standard logo |
 | `Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png` | Red Hat reverse (for dark backgrounds) |
@@ -441,4 +442,6 @@ The app stores a few things locally in your browser:
 
 ---
 
-*Red Hat · Executive Briefing Center Team*
+*brought to you by Red Hat's Executive Briefing Center Team*
+
+*© 2026 Red Hat*

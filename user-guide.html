@@ -212,6 +212,15 @@ main {
   min-width: 0;
 }
 
+.banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0 0 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
 .hero {
   margin-bottom: 16px;
   padding-bottom: 32px;
@@ -452,11 +461,19 @@ footer {
   font-size: 12px;
   color: var(--rh-grey-60);
   background: var(--rh-bg);
+  line-height: 1.6;
 }
 
 footer .rh-mark {
   color: var(--rh-red);
   font-weight: 700;
+}
+
+footer .copyright {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 /* ─── Back-to-top ───────────────────────────────────────── */
@@ -516,7 +533,7 @@ footer .rh-mark {
 /* ─── Print ─────────────────────────────────────────────── */
 @media print {
   body { background: var(--rh-white); }
-  .topbar, .sidebar, .skip-link, .back-to-top, footer .rh-mark + br, .topbar .open-app { display: none !important; }
+  .topbar, .sidebar, .skip-link, .back-to-top, .banner, .topbar .open-app { display: none !important; }
   .layout {
     display: block;
     box-shadow: none;
@@ -568,6 +585,7 @@ footer .rh-mark {
 
   <main id="main">
     <div class="hero">
+      <img src="qrious_george_banner.png" alt="QRious George &mdash; Your Curious QR Code Generator" class="banner">
       <p class="eyebrow">User Guide</p>
       <h1>QRious George</h1>
       <p>A web-based tool for creating branded QR codes for URLs, WiFi networks, email, SMS, contact cards, calendar events, and bulk batches &mdash; built for the Red Hat Executive Briefing Center team.</p>
@@ -1008,6 +1026,7 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
             <tr><td><code>README.md</code></td><td>Project overview</td></tr>
             <tr><td><code>CHANGELOG.md</code></td><td>Release history</td></tr>
             <tr><td><code>LICENSE</code></td><td>MIT license for the source code</td></tr>
+            <tr><td><code>qrious_george_banner.png</code></td><td>Page banner shown at the top of the app and user guide</td></tr>
             <tr><td><code>Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png</code></td><td>Red Hat EBC team logo</td></tr>
             <tr><td><code>Logo-Red_Hat-A-RGB.Small-logo-transparent.png</code></td><td>Red Hat standard logo</td></tr>
             <tr><td><code>Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png</code></td><td>Red Hat reverse (for dark backgrounds)</td></tr>
@@ -1047,7 +1066,8 @@ customer-c,https://www.redhat.com/briefings/customer-c</code></pre>
 </div>
 
 <footer>
-  <span class="rh-mark">Red Hat</span> &middot; Executive Briefing Center Team
+  brought to you by <span class="rh-mark">Red Hat</span>'s Executive Briefing Center Team<br>
+  <span class="copyright">&copy; 2026 Red Hat</span>
 </footer>
 
 <script>

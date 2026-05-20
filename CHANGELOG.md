@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing pending._
 
+## [1.5.0] - 2026-05-20
+
+### Added
+
+- **QRious George banner** (`qrious_george_banner.png`) displayed at the top of both the app and the user guide. Hidden in print to save space.
+- Copyright line `© 2026 Red Hat` in the footers of the app, the user guide, and `USER_GUIDE.md`.
+
+### Changed
+
+- Footer tagline rewritten from "Red Hat · Executive Briefing Center Team" to "brought to you by Red Hat's Executive Briefing Center Team" across the app, the user guide, and `USER_GUIDE.md`.
+
 ## [1.4.0] - 2026-05-20
 
 ### Changed
@@ -73,7 +84,8 @@ _Nothing pending._
 - Companion user guide in Markdown and Red Hat-branded HTML.
 
 [Unreleased]: https://github.com/holzerjm/QRcode-Generator/compare/main...HEAD
-[1.4.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.5.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
+[1.4.0]: https://github.com/holzerjm/QRcode-Generator/commit/56bedbb
 [1.3.0]: https://github.com/holzerjm/QRcode-Generator/commit/9e6b8bd
 [1.2.0]: https://github.com/holzerjm/QRcode-Generator/commit/3b3f792
 [1.1.0]: https://github.com/holzerjm/QRcode-Generator/commit/6040ad6

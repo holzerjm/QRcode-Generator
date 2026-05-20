@@ -71,6 +71,7 @@ Release history is in [`CHANGELOG.md`](CHANGELOG.md).
 | `README.md` | This file |
 | `CHANGELOG.md` | Release history |
 | `LICENSE` | MIT license for the source code |
+| `qrious_george_banner.png` | Page banner shown at the top of the app and user guide |
 | `Logo-Red_Hat-Team-Executive_Briefing_Center_Team-A-Standard-RGB.png` | Red Hat EBC team logo |
 | `Logo-Red_Hat-A-RGB.Small-logo-transparent.png` | Red Hat standard logo |
 | `Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png` | Red Hat reverse logo |
