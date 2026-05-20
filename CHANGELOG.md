@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing pending._
 
+## [1.3.0] - 2026-05-20
+
+### Added
+
+- **Red Hat Customer Marketing brand profile** — fourth built-in chip applying the Customer Marketing team logo with Red Hat red (`#EE0000`).
+- Two new preset logos in the Logo dropdown: **Red Hat Customer Marketing** (color) and **Red Hat Customer Marketing (reverse)** (light, for dark QR codes).
+- URL auto-suggestion now recognizes `customer-marketing` keywords and offers the matching logo.
+
 ## [1.2.0] - 2026-05-19
 
 ### Added
@@ -57,6 +65,7 @@ _Nothing pending._
 - Companion user guide in Markdown and Red Hat-branded HTML.
 
 [Unreleased]: https://github.com/holzerjm/QRcode-Generator/compare/main...HEAD
+[1.3.0]: https://github.com/holzerjm/QRcode-Generator/commits/main
 [1.2.0]: https://github.com/holzerjm/QRcode-Generator/commit/3b3f792
 [1.1.0]: https://github.com/holzerjm/QRcode-Generator/commit/6040ad6
 [1.0.0]: https://github.com/holzerjm/QRcode-Generator/commit/da69a53

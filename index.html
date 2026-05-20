@@ -1140,6 +1140,10 @@ footer .rh-mark {
         <span class="profile-swatch" style="background:#FFC600;"></span>
         <span>The Open Accelerator</span>
       </button>
+      <button class="profile-chip" type="button" data-profile="customer-marketing" role="radio" aria-checked="false">
+        <span class="profile-swatch" style="background:#EE0000;"></span>
+        <span>Customer Marketing</span>
+      </button>
       <button class="profile-chip add-chip" type="button" id="save-profile-btn" aria-label="Save current settings as a new profile">
         <span class="plus" aria-hidden="true">+</span>
         <span>Save as&hellip;</span>
@@ -1376,6 +1380,8 @@ footer .rh-mark {
           <option value="redhat-reverse">Red Hat (reverse, for dark QR)</option>
           <option value="toa">The Open Accelerator</option>
           <option value="toa-reverse">The Open Accelerator (reverse)</option>
+          <option value="customer-marketing">Red Hat Customer Marketing</option>
+          <option value="customer-marketing-reverse">Red Hat Customer Marketing (reverse)</option>
           <option value="custom">Upload custom&hellip;</option>
         </select>
         <div class="logo-preview empty" id="logo-preview" aria-hidden="true"></div>
@@ -1515,19 +1521,23 @@ const LOGO_PRESETS = {
   redhat:           { src: 'Logo-Red_Hat-A-RGB.Small-logo-transparent.png',                       label: 'Red Hat' },
   'redhat-reverse': { src: 'Logo-Red_Hat-A-Reverse-RGB.Small-logo-transparent.png',               label: 'Red Hat (reverse)' },
   toa:              { src: 'Logo-OpenAccelerator-A-Standard-RGB.png',                             label: 'The Open Accelerator' },
-  'toa-reverse':    { src: 'Logo-OpenAccelerator-A-Reverse-RGB.png',                              label: 'The Open Accelerator (reverse)' }
+  'toa-reverse':    { src: 'Logo-OpenAccelerator-A-Reverse-RGB.png',                              label: 'The Open Accelerator (reverse)' },
+  'customer-marketing':         { src: 'Logo-Red_Hat-Customer_Marketing_Team-A-Standard-RGB_Small_logo_transparent.png', label: 'Red Hat Customer Marketing' },
+  'customer-marketing-reverse': { src: 'Logo-Red_Hat-Customer_Marketing_Team-A-Reverse-RGB_Small_logo_transparent.png',  label: 'Red Hat Customer Marketing (reverse)' }
 };
 
 const SUGGESTION_RULES = [
-  { keys: ['ebc.redhat.com', 'executive-briefing', 'execbriefing', 'briefing.redhat'], preset: 'ebc',    label: 'Red Hat EBC' },
-  { keys: ['openaccelerator', 'theopenaccelerator', '/toa/', 'toa.redhat'],            preset: 'toa',    label: 'The Open Accelerator' },
-  { keys: ['redhat.com', 'redhat.dev', 'red-hat', 'redhat'],                            preset: 'redhat', label: 'Red Hat' }
+  { keys: ['ebc.redhat.com', 'executive-briefing', 'execbriefing', 'briefing.redhat'], preset: 'ebc',                label: 'Red Hat EBC' },
+  { keys: ['openaccelerator', 'theopenaccelerator', '/toa/', 'toa.redhat'],            preset: 'toa',                label: 'The Open Accelerator' },
+  { keys: ['customer-marketing', 'customermarketing', '/customer-marketing/'],         preset: 'customer-marketing', label: 'Red Hat Customer Marketing' },
+  { keys: ['redhat.com', 'redhat.dev', 'red-hat', 'redhat'],                            preset: 'redhat',             label: 'Red Hat' }
 ];
 
 const PROFILES = {
   none: { logo: 'none', color: '#151515', label: 'None' },
   ebc:  { logo: 'ebc',  color: '#EE0000', label: 'Red Hat EBC' },
-  toa:  { logo: 'toa',  color: '#FFC600', label: 'The Open Accelerator' }
+  toa:  { logo: 'toa',  color: '#FFC600', label: 'The Open Accelerator' },
+  'customer-marketing': { logo: 'customer-marketing', color: '#EE0000', label: 'Red Hat Customer Marketing' }
 };
 
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
